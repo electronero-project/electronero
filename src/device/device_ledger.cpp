@@ -544,6 +544,20 @@ namespace hw {
         memmove(dbg_spendkey.data, this->buffer_recv+32, 32);
         #endif
 
+        //View key is retrievied, if allowed, to speed up blockchain parsing
+        memmove(this->viewkey.data,  this->buffer_recv+0,  32);
+        if (is_fake_view_key(this->viewkey)) {
+          MDEBUG("Have Not view key");
+          this->has_view_key = false;
+        } else {
+          MDEBUG("Have view key");
+          this->has_view_key = true;
+        }
+      
+        #ifdef DEBUG_HWDEVICE
+        memmove(dbg_viewkey.data, this->buffer_recv+0, 32);
+        memmove(dbg_spendkey.data, this->buffer_recv+32, 32);
+        #endif
         return true;
     }
 
@@ -1393,32 +1407,6 @@ namespace hw {
         memmove(tx_key.data, &this->buffer_recv[32], 32);
   
         return true;
-    }
-
-    bool  device_ledger::set_signature_mode(unsigned int sig_mode) {
-        AUTO_LOCK_CMD();
-        int offset ;
-
-        reset_buffer();
-
-        this->buffer_send[0] = 0x00;
-        this->buffer_send[1] = INS_SET_SIGNATURE_MODE;
-        this->buffer_send[2] = 0x01;
-        this->buffer_send[3] = 0x00;
-        this->buffer_send[4] = 0x00;
-        offset = 5;
-        //options
-        this->buffer_send[offset] = 0x00;
-        offset += 1;
-        //account
-        this->buffer_send[offset] = sig_mode;
-        offset += 1;
-
-        this->buffer_send[4] = offset-5;
-        this->length_send = offset;
-        this->exchange();
-        
-      return true;
     }
 
     bool device_ledger::encrypt_payment_id(crypto::hash8 &payment_id, const crypto::public_key &public_key, const crypto::secret_key &secret_key) {

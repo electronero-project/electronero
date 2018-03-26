@@ -78,6 +78,7 @@ namespace hw {
            return false;
     }
 
+
     class device {
     protected:
         std::string  name;
