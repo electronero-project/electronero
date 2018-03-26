@@ -506,13 +506,12 @@ namespace hw {
         return true;
     }
 
-    bool  device_ledger::get_secret_keys(crypto::secret_key &vkey , crypto::secret_key &skey) {
+    // bool  device_ledger::get_secret_keys(crypto::secret_key & viewkey, crypto::secret_key & spendkey) {
+    bool  device_ledger::get_secret_keys(crypto::secret_key &vkey, crypto::secret_key &skey) {
         AUTO_LOCK_CMD();
-
         //secret key are represented as fake key on the wallet side
         memset(vkey.data, 0x00, 32);
         memset(skey.data, 0xFF, 32);
-
         //spcialkey, normal conf handled in decrypt
         int offset;
         reset_buffer();
@@ -530,7 +529,6 @@ namespace hw {
         this->buffer_send[4] = offset-5;
         this->length_send = offset;
         this->exchange();
-
         //View key is retrievied, if allowed, to speed up blockchain parsing
         memmove(this->viewkey.data,  this->buffer_recv+0,  32);
         if (is_fake_view_key(this->viewkey)) {
@@ -1038,7 +1036,6 @@ namespace hw {
     bool device_ledger::generate_key_derivation(const crypto::public_key &pub, const crypto::secret_key &sec, crypto::key_derivation &derivation) {
         AUTO_LOCK_CMD();
         bool r = false;
-
         #ifdef DEBUG_HWDEVICE
         const crypto::public_key pub_x = pub;
         const crypto::secret_key sec_x = hw::ledger::decrypt(sec);
@@ -1048,7 +1045,6 @@ namespace hw {
         this->controle_device->generate_key_derivation(pub_x, sec_x, derivation_x);
         hw::ledger::log_hexbuffer("generate_key_derivation: [[OUT]] derivation", derivation_x.data, 32);
         #endif
-
       if ((this->mode == TRANSACTION_PARSE)  && has_view_key) {
         //A derivation is resquested in PASRE mode and we have the view key,
         //so do that wihtout the device and return the derivation unencrypted.
@@ -1057,11 +1053,8 @@ namespace hw {
         assert(is_fake_view_key(sec));
         r = crypto::generate_key_derivation(pub, this->viewkey, derivation);
       } else {
-
         int offset;
-
         reset_buffer();
-
         this->buffer_send[0] = 0x00;
         this->buffer_send[1] = INS_GEN_KEY_DERIVATION;
         this->buffer_send[2] = 0x00;
@@ -1400,6 +1393,32 @@ namespace hw {
         memmove(tx_key.data, &this->buffer_recv[32], 32);
   
         return true;
+    }
+
+    bool  device_ledger::set_signature_mode(unsigned int sig_mode) {
+        AUTO_LOCK_CMD();
+        int offset ;
+
+        reset_buffer();
+
+        this->buffer_send[0] = 0x00;
+        this->buffer_send[1] = INS_SET_SIGNATURE_MODE;
+        this->buffer_send[2] = 0x01;
+        this->buffer_send[3] = 0x00;
+        this->buffer_send[4] = 0x00;
+        offset = 5;
+        //options
+        this->buffer_send[offset] = 0x00;
+        offset += 1;
+        //account
+        this->buffer_send[offset] = sig_mode;
+        offset += 1;
+
+        this->buffer_send[4] = offset-5;
+        this->length_send = offset;
+        this->exchange();
+        
+      return true;
     }
 
     bool device_ledger::encrypt_payment_id(crypto::hash8 &payment_id, const crypto::public_key &public_key, const crypto::secret_key &secret_key) {

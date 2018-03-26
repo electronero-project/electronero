@@ -133,8 +133,7 @@ namespace hw {
         bool release() override;
         bool connect(void) override;
         bool disconnect() override;
-
-        bool  set_mode(device_mode mode) override;
+        bool set_mode(device_mode mode) override;
 
         /* ======================================================================= */
         /*  LOCKER                                                                 */
