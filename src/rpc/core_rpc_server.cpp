@@ -2087,7 +2087,7 @@ namespace cryptonote
     {
       for (uint64_t amount: req.amounts)
       {
-	static struct D
+        static struct D
         {
           boost::mutex mutex;
           std::vector<uint64_t> cached_distribution;
@@ -2123,7 +2123,7 @@ namespace cryptonote
           for (size_t n = 1; n < distribution.size(); ++n)
             distribution[n] += distribution[n-1];
         }
-	if (amount == 0)
+        if (amount == 0)
         {
           d.cached_from = req.from_height;
           d.cached_to = req.to_height;
