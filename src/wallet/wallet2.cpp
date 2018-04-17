@@ -115,7 +115,6 @@ using namespace cryptonote;
 #define STAGENET_SEGREGATION_FORK_HEIGHT 1000000
 #define SEGREGATION_FORK_VICINITY 1500 /* blocks */
 
-
 namespace
 {
   std::string get_default_ringdb_path()
@@ -123,7 +122,7 @@ namespace
     boost::filesystem::path dir = tools::get_default_data_dir();
     // remove .electronero, replace with .ringdb
     dir = dir.remove_filename();
-    dir /= ".ringdb";
+    dir /= config::RINGDB_DIR; // RINGDB_DIR is in config
     return dir.string();
   }
 }
