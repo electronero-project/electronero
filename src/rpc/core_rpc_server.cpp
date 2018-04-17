@@ -2087,7 +2087,7 @@ namespace cryptonote
     {
       for (uint64_t amount: req.amounts)
       {
-        static struct D
+	static struct D
         {
           boost::mutex mutex;
           std::vector<uint64_t> cached_distribution;
@@ -2111,7 +2111,7 @@ namespace cryptonote
           error_resp.message = "Failed to get rct distribution";
           return false;
         }
-        if (req.to_height > 0 && req.to_height >= req.from_height)
+	if (req.to_height > 0 && req.to_height >= req.from_height)
         {
           uint64_t offset = std::max(req.from_height, start_height);
           if (offset <= req.to_height && req.to_height - offset + 1 < distribution.size())
@@ -2123,8 +2123,7 @@ namespace cryptonote
           for (size_t n = 1; n < distribution.size(); ++n)
             distribution[n] += distribution[n-1];
         }
-
-        if (amount == 0)
+	if (amount == 0)
         {
           d.cached_from = req.from_height;
           d.cached_to = req.to_height;
