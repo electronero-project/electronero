@@ -6,3 +6,7 @@
 	path = external/miniupnp
 	url = https://github.com/monero-project/miniupnp
 	branch = monero
+[submodule "external/miniupnp"]
+	path = external/miniupnp
+	url = https://github.com/monero-project/miniupnp
+	branch = monero
