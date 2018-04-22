@@ -110,10 +110,10 @@ using namespace cryptonote;
 
 #define MULTISIG_EXPORT_FILE_MAGIC "Monero multisig export\001"
 
-#define SEGREGATION_FORK_HEIGHT 1546000
+#define SEGREGATION_FORK_VICINITY 1500 /* blocks */
+#define SEGREGATION_FORK_HEIGHT 239925
 #define TESTNET_SEGREGATION_FORK_HEIGHT 1000000
 #define STAGENET_SEGREGATION_FORK_HEIGHT 1000000
-#define SEGREGATION_FORK_VICINITY 1500 /* blocks */
 
 namespace
 {
@@ -10444,9 +10444,9 @@ std::vector<std::pair<uint64_t, uint64_t>> wallet2::estimate_backlog(uint64_t mi
 uint64_t wallet2::get_segregation_fork_height() const
 {
   if (m_nettype == TESTNET)
-    return config::testnet::TESTNET_SEGREGATION_FORK_HEIGHT;
+    return TESTNET_SEGREGATION_FORK_HEIGHT;
   if (m_nettype == STAGENET)
-    return config::stagenet::STAGENET_SEGREGATION_FORK_HEIGHT;
+    return STAGENET_SEGREGATION_FORK_HEIGHT;
   THROW_WALLET_EXCEPTION_IF(m_nettype != MAINNET, tools::error::wallet_internal_error, "Invalid network type");
 
   if (m_segregation_height > 0)
@@ -10490,7 +10490,7 @@ uint64_t wallet2::get_segregation_fork_height() const
         return best_height;
     }
   }
-  return config::SEGREGATION_FORK_HEIGHT;
+  return SEGREGATION_FORK_HEIGHT;
 }
 //----------------------------------------------------------------------------------------------------
 void wallet2::generate_genesis(cryptonote::block& b) const {
