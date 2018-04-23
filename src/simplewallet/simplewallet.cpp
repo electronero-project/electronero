@@ -4330,7 +4330,7 @@ bool simple_wallet::transfer_main(int transfer_type, const std::vector<std::stri
   size_t fake_outs_count;
   if(local_args.size() > 0) {
 	  size_t ring_size;
-		if (!epee::string_tools::get_xtype_from_string(ring_size, local_args[0]))
+		if (!epee::string_tools::get_xtype_from_string(fake_outs_count, local_args[0]))
     {      
 			message_writer() << boost::format(tr("** No mixin value specified, default mixin %s will be used for this transaction.")) % (m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN);
 			fake_outs_count = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
@@ -4344,7 +4344,7 @@ bool simple_wallet::transfer_main(int transfer_type, const std::vector<std::stri
           prompt << boost::format(tr("Given mixin value %s is too low, default mixin %s will be used for this transaction. Is this okay?  (Y/Yes/N/No): ")) % fake_outs_count % (m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN);
         }
         else{
-          fail_msg_writer() << boost::format(tr("Given mixin value %s is too high. Max mixin value allowed is %s. Please resend tx with lower mixin.")) % fake_outs_count % MAX_MIXIN;
+          fail_msg_writer() << boost::format(tr("Given mixin value %s is too high. Max mixin value allowed is %s. Please resend tx with lower mixin. DevErrRct: ring_size is %s.")) % fake_outs_count % MAX_MIXIN % ring_size;
           return true;
         }
 
@@ -4357,7 +4357,7 @@ bool simple_wallet::transfer_main(int transfer_type, const std::vector<std::stri
 					fail_msg_writer() << tr("transaction cancelled.");
 					return true;
 				}
-
+				fake_outs_count = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
 				
 			}
 
@@ -4838,7 +4838,7 @@ bool simple_wallet::sweep_main(uint64_t below, const std::vector<std::string> &a
    size_t fake_outs_count;
   if(local_args.size() > 0) {
 	  size_t ring_size;
-    if(!epee::string_tools::get_xtype_from_string(ring_size, local_args[0]))
+    if(!epee::string_tools::get_xtype_from_string(fake_outs_count, local_args[0]))
     {
       message_writer() << boost::format(tr("** No mixin value specified, default mixin %s will be used for this transaction.")) % (m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN);
 			fake_outs_count = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
@@ -4847,7 +4847,7 @@ bool simple_wallet::sweep_main(uint64_t below, const std::vector<std::string> &a
     {
       if (fake_outs_count > MAX_MIXIN)
       {
-        fail_msg_writer() << boost::format(tr("Given mixin value %s is too high. Max mixin value allowed is %s. Please resend tx with lower mixin.")) % fake_outs_count % MAX_MIXIN;
+        fail_msg_writer() << boost::format(tr("Given mixin value %s is too high. Max mixin value allowed is %s. Please resend tx with lower mixin. DevErrRct ring_size is %s.")) % fake_outs_count % MAX_MIXIN % ring_size;
         return true;
       }
 
