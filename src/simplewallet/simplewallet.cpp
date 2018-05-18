@@ -1627,7 +1627,7 @@ bool simple_wallet::set_default_ring_size(const std::vector<std::string> &args/*
       return true;
     }
     if (mixin == 0)
-      mixin = MIN_MIXIN;
+      mixin = DEFAULT_MIXIN;
  
     if (ring_size != 0 && ring_size != DEFAULT_MIX+1)
       message_writer() << tr("WARNING: this is a non default ring size, which may harm your privacy. Default is recommended.");
