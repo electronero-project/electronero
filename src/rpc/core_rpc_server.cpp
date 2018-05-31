@@ -2155,6 +2155,13 @@ namespace cryptonote
           d.cached = true;
         }
 
+        if (req.cumulative)
+        {
+          distribution[0] += base;
+          for (size_t n = 1; n < distribution.size(); ++n)
+            distribution[n] += distribution[n-1];
+        }
+
         res.distributions.push_back({amount, start_height, std::move(distribution), base});
       }
     }
