@@ -495,16 +495,7 @@ namespace nodetool
         if (result.size())
         {
           for (const auto& addr_string : result)
-<<<<<<< HEAD
             full_addrs.insert(addr_string + ":" + std::to_string(m_nettype == cryptonote::TESTNET ? ::config::testnet::P2P_DEFAULT_PORT : m_nettype == cryptonote::STAGENET ? ::config::stagenet::P2P_DEFAULT_PORT : ::config::P2P_DEFAULT_PORT));
-=======
-            if (m_nettype == cryptonote::STAGENET)
-            {
-            full_addrs.insert(addr_string + ":30080");
-            } else {
-            full_addrs.insert(addr_string + ":44080");
-              }
->>>>>>> 1a85f3fc5 (m_nettype not nettype)
         }
         ++i;
       }
