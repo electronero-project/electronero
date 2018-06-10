@@ -5,6 +5,10 @@ Source code forked from Monero
 Copyright (c) 2014-2018 The Monero Project.   
 Portions Copyright (c) 2012-2013 The Cryptonote developers.
 
+<<<<<<< HEAD
+=======
+## Development resources
+>>>>>>> cff2b52ed (Update README.md)
 
 - GitHub: [https://github.com/electronero/](https://github.com/electronero)
 
