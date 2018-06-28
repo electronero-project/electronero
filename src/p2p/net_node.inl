@@ -383,7 +383,6 @@ namespace nodetool
     }
     else
     { 
-      full_addrs.insert("165.227.189.226:12089");
       full_addrs.insert("138.68.175.185:12089");
       full_addrs.insert("167.99.228.39:12089");
       full_addrs.insert("144.202.59.175:12089");
