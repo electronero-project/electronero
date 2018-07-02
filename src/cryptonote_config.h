@@ -93,7 +93,7 @@
 #define DIFFICULTY_WINDOW_V12                           90
 #define DIFFICULTY_BLOCKS_COUNT_V12                     DIFFICULTY_WINDOW_V2
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2           DIFFICULTY_TARGET * 2 // https://github.com/zawy12/difficulty-algorithms/issues/3
-#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V12		60*5
+#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V12		    60*5
 
 #define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS_V1   DIFFICULTY_TARGET_V1 * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
 #define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS_V2   DIFFICULTY_TARGET_V2 * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
@@ -152,22 +152,17 @@
 #define COIN_EMISSION_HEIGHT_INTERVAL                   ((uint64_t) (COIN_EMISSION_MONTH_INTERVAL * (30.4375 * 24 * 3600) / DIFFICULTY_TARGET)) // calculated to # of heights to change emission speed
 #define PEAK_COIN_EMISSION_YEAR                         4
 #define PEAK_COIN_EMISSION_HEIGHT                       ((uint64_t) (((12 * 30.4375 * 24 * 3600)/DIFFICULTY_TARGET) * PEAK_COIN_EMISSION_YEAR)) // = (# of heights emmitted per year) * PEAK_COIN_EMISSION_YEAR
-
 #define HARD_FORK_SPLIT                                 1
 #define HF_VERSION_DYNAMIC_FEE                          100
 #define HF_VERSION_ENFORCE_RCT                          6
 #define HF_VERSION_MIN_MIXIN_4                          7
 #define HF_VERSION_MIN_MIXIN_6                          8
-
 #define CRYPTONOTE_RINGDB_DIR                           ".shared-etnx-ringdb" // shared-ringdb"
-
 #define MIN_MIXIN                                       1      // minimum mixin allowed
 #define MAX_MIXIN                                       100    // maximum mixin allowed
 #define DEFAULT_MIXIN                                   12     // default mixin
 #define PER_KB_FEE_QUANTIZATION_DECIMALS                8
-
 #define HASH_OF_HASHES_STEP                             256
-
 #define DEFAULT_TXPOOL_MAX_SIZE                         648000000ull // 3 days at 300000, in bytes
 
 // New constants are intended to go here
