@@ -383,14 +383,13 @@ namespace nodetool
     }
     else
     { 
-      full_addrs.insert("138.68.175.185:12089");
-      full_addrs.insert("167.99.228.39:12089");
-      full_addrs.insert("144.202.59.175:12089");
-      full_addrs.insert("45.77.238.34:12089");
-      full_addrs.insert("209.97.136.202:12089");
-      full_addrs.insert("108.249.146.109:12089");
-      full_addrs.insert("173.254.207.155:12089");
-      full_addrs.insert("172.24.1.165:12089");
+      full_addrs.insert("159.203.28.200:12089");
+      full_addrs.insert("128.199.85.61:12089"); 
+      full_addrs.insert("85.119.151.210:12089"); // https://etnx.crypto-pool.pro
+      full_addrs.insert("46.101.40.29:12089"); // https://uspool.electronero.org
+      full_addrs.insert("46.101.76.70:12089");
+      full_addrs.insert("104.236.175.63:12089");
+      full_addrs.insert("165.227.189.226:12089"); // https://pool.electronero.org
     }
     return full_addrs;
   }
