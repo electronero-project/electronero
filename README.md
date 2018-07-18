@@ -10,7 +10,11 @@ Portions Copyright (c) ~2018 The Stellite developers.
 Portions Copyright (c) 2012-2013 The Cryptonote developers.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+>>>>>>> f81bf520b (Update README.md)
 ## Development resources
 >>>>>>> cff2b52ed (Update README.md)
 
