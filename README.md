@@ -18,14 +18,20 @@ Portions Copyright (c) 2012-2013 The Cryptonote developers.
 ## Development resources
 >>>>>>> cff2b52ed (Update README.md)
 
+<<<<<<< HEAD
 - GitHub: [https://github.com/electronero/](https://github.com/electronero)
+=======
+- Web: [electronero.org](https://electronero.org)
+- Chat: [t.me/electronero](https://t.me/electronero)
+- Mail: [support@electronero.org](mailto:support@electronero.org)
+- GitHub: [https://github.com/electronero/electronero](https://github.com/electronero/electronero
+>>>>>>> aa7eb1020 (Update README.md)
 
 <<<<<<< HEAD
 ## Vulnerability response
 
 - Our [Vulnerability Response Process](https://github.com/monero-project/meta/blob/master/VULNERABILITY_RESPONSE_PROCESS.md) encourages responsible disclosure
 - We are also available via [HackerOne](https://hackerone.com/monero)
-
 
 ## Announcements
 
