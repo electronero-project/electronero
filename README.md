@@ -131,7 +131,7 @@ Dates are provided in the format YYYY-MM-DD.
 | 1288616                        | 2017-04-15 | v5                | v0.10.3.0              | v0.10.3.1                  | Adjusted minimum blocksize and fee algorithm      |
 | 1400000                        | 2017-09-16 | v6                | v0.11.0.0              | v0.11.0.0                  | Allow only RingCT transactions, allow only >= ringsize 5      |
 | 1546000                        | 2018-04-06 | v7                | v0.12.0.0              | v0.12.0.0                  | Cryptonight variant 1, ringsize >= 7, sorted inputs
-| XXXXXXX                        | 2018-10-XX | XX                | XXXXXXXXX              | XXXXXXXXX                  | X
+| XXXXXXX                        | 2018-07-XX | v15                | v12.3.0               | v12.3.1                  | Cryptonight fast, variant 4, ringsize >=1
 
 X's indicate that these details have not been determined as of commit date.
 
@@ -139,6 +139,7 @@ X's indicate that these details have not been determined as of commit date.
 
 Approximately three months prior to a scheduled software upgrade, a branch from Master will be created with the new release version tag. Pull requests that address bugs should then be made to both Master and the new release branch. Pull requests that require extensive review and testing (generally, optimizations and new features) should *not* be made to the release branch. 
 
+<<<<<<< HEAD
 ## Installing Monero from a package
 
 Packages are available for
@@ -184,6 +185,8 @@ Packaging for your favorite distribution would be a welcome contribution!
 
 ## Compiling Monero from source
 =======
+=======
+>>>>>>> 8e9c81975 (Update README.md)
 ## Compiling Electronero from source
 >>>>>>> e5fc18505 (Read Me)
 
