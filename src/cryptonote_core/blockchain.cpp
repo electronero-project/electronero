@@ -73,7 +73,7 @@
 #define MAINNET_HARDFORK_V14_HEIGHT ((uint64_t)(337816)) // MAINNET v14 hard fork
 #define MAINNET_HARDFORK_V15_HEIGHT ((uint64_t)(337838)) // MAINNET v15 hard fork 
 #define MAINNET_HARDFORK_V16_HEIGHT ((uint64_t)(500060)) // MAINNET v16 hard fork
-#define MAINNET_HARDFORK_V17_HEIGHT ((uint64_t)(571550)) // MAINNET v17 hard fork
+#define MAINNET_HARDFORK_V17_HEIGHT ((uint64_t)(570000)) // MAINNET v17 hard fork
 
 #define TESTNET_ELECTRONERO_HARDFORK ((uint64_t)(12746)) // Electronero TESTNET fork height
 #define TESTNET_HARDFORK_V1_HEIGHT ((uint64_t)(1)) // TESTNET v1 
@@ -4722,6 +4722,7 @@ void Blockchain::cancel()
 
 #if defined(PER_BLOCK_CHECKPOINT)
 static const char expected_block_hashes_hash[] = "0924bc1c47aae448321fde949554be192878dd800e6489379865218f84eacbca";
+
 void Blockchain::load_compiled_in_block_hashes()
 {
   const bool testnet = m_nettype == TESTNET;
