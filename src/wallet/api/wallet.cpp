@@ -60,7 +60,7 @@ namespace Monero {
 
 namespace {
     // copy-pasted from simplewallet
-    static const size_t DEFAULT_MIXIN = 12;
+
     static const size_t DEFAULT_MIX = DEFAULT_MIXIN; // just alias not used
     static const int    DEFAULT_REFRESH_INTERVAL_MILLIS = 1000 * 10;
     // limit maximum refresh interval as one minute
@@ -305,6 +305,7 @@ uint64_t Wallet::maximumAllowedAmount()
 {
     return std::numeric_limits<uint64_t>::max();
 }
+
 
 void Wallet::init(const char *argv0, const char *default_log_base_name, const std::string &log_path, bool console) {
 #ifdef WIN32

@@ -110,8 +110,8 @@ using namespace cryptonote;
 
 #define MULTISIG_EXPORT_FILE_MAGIC "Monero multisig export\001"
 
-#define SEGREGATION_FORK_VICINITY 180000 /* blocks */
-#define SEGREGATION_FORK_HEIGHT 239925
+#define SEGREGATION_FORK_VICINITY 150000
+#define SEGREGATION_FORK_HEIGHT 1000000
 #define TESTNET_SEGREGATION_FORK_HEIGHT 1000000
 #define STAGENET_SEGREGATION_FORK_HEIGHT 1000000
 
@@ -572,7 +572,7 @@ size_t estimate_tx_size(bool use_rct, int n_inputs, int mixin, int n_outputs, si
   if (use_rct)
     return estimate_rct_tx_size(n_inputs, mixin, n_outputs + 1, extra_size, bulletproof);
   else
-    return n_inputs * (mixin) * APPROXIMATE_INPUT_BYTES + extra_size;
+    return n_inputs * (mixin+1) * APPROXIMATE_INPUT_BYTES + extra_size;
 }
 
 uint8_t get_bulletproof_fork()
@@ -5924,6 +5924,7 @@ void wallet2::get_outs(std::vector<std::vector<tools::wallet2::get_outs_entry>> 
     throw_on_rpc_response_error(result, "get_info");
     bool is_shortly_after_segregation_fork = height >= segregation_fork_height && height < segregation_fork_height + SEGREGATION_FORK_VICINITY;
     bool is_after_segregation_fork = height >= segregation_fork_height;
+
     // get histogram for the amounts we need
     cryptonote::COMMAND_RPC_GET_OUTPUT_HISTOGRAM::request req_t = AUTO_VAL_INIT(req_t);
     cryptonote::COMMAND_RPC_GET_OUTPUT_HISTOGRAM::response resp_t = AUTO_VAL_INIT(resp_t);
@@ -8244,14 +8245,14 @@ const wallet2::transfer_details &wallet2::get_transfer_details(size_t idx) const
 std::vector<size_t> wallet2::select_available_unmixable_outputs(bool trusted_daemon)
 {
   // request all outputs with less than 3 instances
-  const size_t min_mixin = use_fork_rules(7, 10) ? MIN_MIXIN : 2; // v7 increases min mixin from 2 to MIN_MIXIN 
+  const size_t min_mixin = use_fork_rules(7, 10) ? MIN_MIXIN  : 2; // v7 increases min mixin from 2 to MIN_MIXIN 
   return select_available_outputs_from_histogram(min_mixin, false, true, true, trusted_daemon);
 }
 //----------------------------------------------------------------------------------------------------
 std::vector<size_t> wallet2::select_available_mixable_outputs(bool trusted_daemon)
 {
   // request all outputs with at least 3 instances, so we can use mixin 2 with
-  const size_t min_mixin = use_fork_rules(7, 10) ? MIN_MIXIN : 2; // v7 increases min mixin from 2 to MIN_MIXIN 
+  const size_t min_mixin = use_fork_rules(7, 10) ? MIN_MIXIN  : 2; // v7 increases min mixin from 2 to MIN_MIXIN 
   return select_available_outputs_from_histogram(min_mixin, true, true, true, trusted_daemon);
 }
 //----------------------------------------------------------------------------------------------------

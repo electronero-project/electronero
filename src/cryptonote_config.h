@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2014-2022, The Monero Project
 //
 // All rights reserved.
 //
@@ -160,17 +160,21 @@
 #define PEAK_COIN_EMISSION_YEAR                         4
 #define PEAK_COIN_EMISSION_HEIGHT                       ((uint64_t) (((12 * 30.4375 * 24 * 3600)/DIFFICULTY_TARGET) * PEAK_COIN_EMISSION_YEAR)) // = (# of heights emmitted per year) * PEAK_COIN_EMISSION_YEAR
 
-#define HARD_FORK_SPLIT                                 0 
+
 #define HF_VERSION_DYNAMIC_FEE                          100
 #define HF_VERSION_ENFORCE_RCT                          6
 #define HF_VERSION_MIN_MIXIN_4                          7
 #define HF_VERSION_MIN_MIXIN_6                          8
-#define CRYPTONOTE_RINGDB_DIR                           ".bitelectronero-sharded-ringdb" // shared-ringdb"
+
+#define CRYPTONOTE_RINGDB_DIR                           ".bitelectronero-shared-ring-db" // shared-ringdb"
+
 #define MIN_MIXIN                                       1      // minimum mixin allowed
 #define MAX_MIXIN                                       100    // maximum mixin allowed
 #define DEFAULT_MIXIN                                   12     // default mixin
 #define PER_KB_FEE_QUANTIZATION_DECIMALS                8
+
 #define HASH_OF_HASHES_STEP                             256
+
 #define DEFAULT_TXPOOL_MAX_SIZE                         648000000ull // 3 days at 300000, in bytes
 
 // New constants are intended to go here
@@ -189,7 +193,7 @@ namespace config
   uint16_t const RPC_DEFAULT_PORT = 12090;
   uint16_t const ZMQ_RPC_DEFAULT_PORT = 14082;
   boost::uuids::uuid const NETWORK_ID = { {
-    0x63, 0x33, 0x67, 0xE8, 0xA4, 0xF3, 0xF4, 0xEA,0xC2, 0xA6, 0xF2 , 0x8E, 0xD2, 0x66, 0xC2, 0x85
+    0x66, 0x88, 0x68, 0xE8, 0xA8, 0xF6, 0xF8, 0xEA,0xC8, 0xA6, 0xF8 , 0x8E, 0xD2, 0x66, 0xC8, 0x88
     } }; // Bender's nightmare
   std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
   uint32_t const GENESIS_NONCE = 10000;
