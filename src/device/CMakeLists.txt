@@ -38,6 +38,10 @@ set(device_headers
   log.hpp
  )
  
+ if(PCSC_FOUND)
+   set(device_sources ${device_sources} device_ledger.cpp)
+   set(device_headers ${device_headers} device_ledger.hpp)
+ endif()
  
 if(MONERUJO_HIDAPI)
     add_definitions(-DHAVE_MONERUJO)
@@ -51,10 +55,31 @@ if(MONERUJO_HIDAPI)
       device_io_monerujo.hpp
       )
 else ()
-  if(PCSC_FOUND)
-    set(device_sources ${device_sources} device_ledger.cpp)
-    set(device_headers ${device_headers} device_ledger.hpp)
+if(MONERUJO_HIDAPI)
+    add_definitions(-DHAVE_MONERUJO)
+    set(device_sources
+      ${device_sources}
+      device_ledger.cpp
+      )
+    set(device_headers
+      ${device_headers}
+      device_ledger.hpp
+      device_io_monerujo.hpp
+      )
+else ()
+  if(HIDAPI_FOUND)
+    set(device_sources
+      ${device_sources}
+      device_ledger.cpp
+      device_io_hid.cpp
+      )
+    set(device_headers
+      ${device_headers}
+      device_ledger.hpp
+      device_io_hid.hpp
+      )
   endif()
+  
 
 set(device_private_headers)
 
