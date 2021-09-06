@@ -48,16 +48,12 @@
 #include "crypto/chacha.h"
 #include "ringct/rctTypes.h"
 
-#ifndef USE_DEVICE_LEDGER
-#define USE_DEVICE_LEDGER 1
-#endif
-
 #if !defined(HAVE_PCSC) 
 #undef  USE_DEVICE_LEDGER
 #define USE_DEVICE_LEDGER 0
 #endif
 
-#if USE_DEVICE_LEDGER
+#if defined(HAVE_HIDAPI) || defined(HAVE_MONERUJO)
 #define WITH_DEVICE_LEDGER
 #endif
 
