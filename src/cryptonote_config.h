@@ -67,7 +67,7 @@
 #define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)100000000) // 1 coin
 
 #define CRYPTONOTE_REWARD_BLOCKS_WINDOW                 100
- 
+
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2    60000 //size of block (bytes) after which reward for block calculated using block size
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1    20000 //size of block (bytes) after which reward for block calculated using block size - before first fork
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5    300000 //size of block (bytes) after which reward for block calculated using block size - second change, from v5
@@ -182,65 +182,65 @@
 // New constants are intended to go here
 namespace config
 {
-  uint64_t const DEFAULT_FEE_ATOMIC_XMR_PER_KB = 5;
-  uint8_t const FEE_CALCULATION_MAX_RETRIES = 10;
-  uint64_t const DEFAULT_DUST_THRESHOLD = ((uint64_t)5000); // 
-  uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000000); // pow(10, 8)
-  std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
+    uint64_t const DEFAULT_FEE_ATOMIC_XMR_PER_KB = 5;
+    uint8_t const FEE_CALCULATION_MAX_RETRIES = 10;
+    uint64_t const DEFAULT_DUST_THRESHOLD = ((uint64_t)5000); // 
+    uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000000); // pow(10, 8)
+    std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
-  uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 18018;
-  uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 18019;
-  uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 42;
-  uint16_t const P2P_DEFAULT_PORT = 14080;
-  uint16_t const RPC_DEFAULT_PORT = 12090;
-  uint16_t const ZMQ_RPC_DEFAULT_PORT = 14082;
-  boost::uuids::uuid const NETWORK_ID = { {
-    0x86, 0x86, 0x68, 0xE8, 0xA8, 0xF6, 0xF8, 0xEA,0xC6, 0xA8, 0xF9 , 0x6E, 0xD8, 0x88, 0xC6, 0x66
-    } }; // Bender's nightmare
-  std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
-  uint32_t const GENESIS_NONCE = 10000;
-
-  namespace testnet
-  {
-    uint64_t const TESTNET_SEGREGATION_FORK_HEIGHT = 1000000;
     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 18018;
     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 18019;
     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 42;
-    uint16_t const P2P_DEFAULT_PORT = 13080;
-    uint16_t const RPC_DEFAULT_PORT = 13081;
-    uint16_t const ZMQ_RPC_DEFAULT_PORT = 13082;
+    uint16_t const P2P_DEFAULT_PORT = 14080;
+    uint16_t const RPC_DEFAULT_PORT = 12090;
+    uint16_t const ZMQ_RPC_DEFAULT_PORT = 14082;
     boost::uuids::uuid const NETWORK_ID = { {
-        0xE3, 0xA4, 0xEA, 0x5D, 0xD1, 0x2C,0x04, 0xF8, 0x23, 0xE1, 0x66, 0xC2,  0x85, 0x8E, 0xC8, 0x40
-      } }; // Bender's daydream
+      0x86, 0x86, 0x68, 0xE8, 0xA8, 0xF6, 0xF8, 0xEA,0xC6, 0xA8, 0xF9 , 0x6E, 0xD8, 0x88, 0xC6, 0x66
+      } }; // Bender's nightmare
     std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
-    uint32_t const GENESIS_NONCE = 10001;
-  }
+    uint32_t const GENESIS_NONCE = 10000;
 
-  namespace stagenet
-  {
-    uint64_t const STAGENET_SEGREGATION_FORK_HEIGHT = 1000000;
-    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 18018;
-    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 18019;
-    uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 42;
-    uint16_t const P2P_DEFAULT_PORT = 18680;
-    uint16_t const RPC_DEFAULT_PORT = 18689;
-    uint16_t const ZMQ_RPC_DEFAULT_PORT = 18690;
-    boost::uuids::uuid const NETWORK_ID = { {
-         0xE3, 0xA4, 0xEA, 0x5D, 0xD1, 0x2C,0x04, 0x8E, 0xC8, 0x41, 0xF8, 0x23, 0xE1, 0x66, 0xC2, 0x85
-      } }; // Bender's daydream
-    std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
-    uint32_t const GENESIS_NONCE = 10002;
-  }
+    namespace testnet
+    {
+        uint64_t const TESTNET_SEGREGATION_FORK_HEIGHT = 1000000;
+        uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 18018;
+        uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 18019;
+        uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 42;
+        uint16_t const P2P_DEFAULT_PORT = 13080;
+        uint16_t const RPC_DEFAULT_PORT = 13081;
+        uint16_t const ZMQ_RPC_DEFAULT_PORT = 13082;
+        boost::uuids::uuid const NETWORK_ID = { {
+            0xE3, 0xA4, 0xEA, 0x5D, 0xD1, 0x2C,0x04, 0xF8, 0x23, 0xE1, 0x66, 0xC2,  0x85, 0x8E, 0xC8, 0x40
+          } }; // Bender's daydream
+        std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
+        uint32_t const GENESIS_NONCE = 10001;
+    }
+
+    namespace stagenet
+    {
+        uint64_t const STAGENET_SEGREGATION_FORK_HEIGHT = 1000000;
+        uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 18018;
+        uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 18019;
+        uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 42;
+        uint16_t const P2P_DEFAULT_PORT = 18680;
+        uint16_t const RPC_DEFAULT_PORT = 18689;
+        uint16_t const ZMQ_RPC_DEFAULT_PORT = 18690;
+        boost::uuids::uuid const NETWORK_ID = { {
+             0xE3, 0xA4, 0xEA, 0x5D, 0xD1, 0x2C,0x04, 0x8E, 0xC8, 0x41, 0xF8, 0x23, 0xE1, 0x66, 0xC2, 0x85
+          } }; // Bender's daydream
+        std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
+        uint32_t const GENESIS_NONCE = 10002;
+    }
 }
 
 namespace cryptonote
 {
-  enum network_type : uint8_t
-  {
-    MAINNET = 0,
-    TESTNET,
-    STAGENET,
-    FAKECHAIN,
-    UNDEFINED = 255
-  };
+    enum network_type : uint8_t
+    {
+        MAINNET = 0,
+        TESTNET,
+        STAGENET,
+        FAKECHAIN,
+        UNDEFINED = 255
+    };
 }
