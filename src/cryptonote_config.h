@@ -72,7 +72,7 @@
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1    20000 //size of block (bytes) after which reward for block calculated using block size - before first fork
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5    300000 //size of block (bytes) after which reward for block calculated using block size - second change, from v5
 #define CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE          600
-#define CRYPTONOTE_DISPLAY_DECIMAL_POINT                8
+#define CRYPTONOTE_DISPLAY_DECIMAL_POINT                2
 
 #define CRYPTONOTE_TX_FEE_RESERVED_SIZE                 3
 #define CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5             21
