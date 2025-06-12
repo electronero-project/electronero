@@ -216,7 +216,7 @@ PRAGMA_WARNING_DISABLE_VS(4355)
   template<class t_protocol_handler>
   boost::asio::io_service& connection<t_protocol_handler>::get_io_service()
   {
-    return socket_.get_executor().context()
+    return static_cast<boost::asio::io_context&>(socket_.get_executor().context());
   }
   //---------------------------------------------------------------------------------
   template<class t_protocol_handler>
