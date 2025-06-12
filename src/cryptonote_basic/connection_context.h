@@ -46,6 +46,19 @@ namespace cryptonote
         m_last_request_time(boost::posix_time::microsec_clock::universal_time()),
         m_callback_request_count(0),
         m_last_known_hash(crypto::null_hash) {}
+
+    cryptonote_connection_context(const cryptonote_connection_context& other)
+        : epee::net_utils::connection_context_base() // don't copy base
+        , m_state(other.m_state)
+        , m_needed_objects(other.m_needed_objects)
+        , m_requested_objects(other.m_requested_objects)
+        , m_remote_blockchain_height(other.m_remote_blockchain_height)
+        , m_last_response_height(other.m_last_response_height)
+        , m_last_request_time(other.m_last_request_time)
+        , m_callback_request_count(other.m_callback_request_count.load())
+        , m_last_known_hash(other.m_last_known_hash)
+    {}
+
   
     enum state
     {
