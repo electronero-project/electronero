@@ -31,6 +31,7 @@
 #pragma once
 #include <boost/asio/io_service.hpp>
 #include <boost/serialization/serialization.hpp>
+#define BOOST_SERIALIZATION_VERSION_HPP
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/multi_index_container.hpp>
