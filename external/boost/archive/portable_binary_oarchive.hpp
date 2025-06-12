@@ -23,6 +23,7 @@
 
 #include <ostream>
 #include <boost/version.hpp>
+#include <boost/serialization/version.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/archive/archive_exception.hpp>
 #include <boost/archive/basic_binary_oprimitive.hpp>
