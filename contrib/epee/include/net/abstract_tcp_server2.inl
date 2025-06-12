@@ -46,7 +46,8 @@
 #include "misc_language.h"
 #include "net/local_ip.h"
 #include "pragma_comp_defs.h"
-
+#include <boost/bind/placeholders.hpp>
+using namespace boost::placeholders;
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
