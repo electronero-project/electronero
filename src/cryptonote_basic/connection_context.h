@@ -47,9 +47,6 @@ namespace cryptonote
         m_callback_request_count(0),
         m_last_known_hash(crypto::null_hash) {}
   
-    cryptonote_connection_context(const cryptonote_connection_context&) = delete;
-    cryptonote_connection_context& operator=(const cryptonote_connection_context&) = delete;
-  
     enum state
     {
       state_before_handshake = 0, // default state
