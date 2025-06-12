@@ -26,6 +26,7 @@
 
 #pragma once
 
+#include <boost/bind/bind.hpp>
 #include "portable_storage_template_helper.h"
 #include <boost/utility/value_init.hpp>
 #include "net/levin_base.h"
