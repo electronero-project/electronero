@@ -384,7 +384,8 @@ PRAGMA_WARNING_DISABLE_VS(4355)
     if(!m_is_multithreaded)
     {
       //single thread model, we can wait in blocked call
-      size_t cnt = socket_.get_executor().context().run_one();
+      auto& io_ctx = static_cast<boost::asio::io_context&>(socket_.get_executor().context());
+      size_t cnt = io_ctx.poll();
       if(!cnt)//service is going to quit
         return false;
     }else
@@ -394,7 +395,8 @@ PRAGMA_WARNING_DISABLE_VS(4355)
       //if no handlers were called
       //TODO: Maybe we need to have have critical section + event + callback to upper protocol to
       //ask it inside(!) critical region if we still able to go in event wait...
-      size_t cnt = socket_.get_executor().context().poll_one();     
+      auto& io_ctx = static_cast<boost::asio::io_context&>(socket_.get_executor().context());
+      size_t cnt = io_ctx.poll();     
       if(!cnt)
         misc_utils::sleep_no_w(0);
     }
