@@ -37,66 +37,78 @@
 namespace cryptonote
 {
 
-  struct cryptonote_connection_context: public epee::net_utils::connection_context_base
+  struct cryptonote_connection_context : public epee::net_utils::connection_context_base
   {
-    cryptonote_connection_context()
-      : m_state(state_before_handshake),
-        m_remote_blockchain_height(0),
-        m_last_response_height(0),
-        m_last_request_time(boost::posix_time::microsec_clock::universal_time()),
-        m_callback_request_count(0),
-        m_last_known_hash(crypto::null_hash) {}
-
-    cryptonote_connection_context(const cryptonote_connection_context& other)
-        : epee::net_utils::connection_context_base() // don't copy base
-        , m_state(other.m_state)
-        , m_needed_objects(other.m_needed_objects)
-        , m_requested_objects(other.m_requested_objects)
-        , m_remote_blockchain_height(other.m_remote_blockchain_height)
-        , m_last_response_height(other.m_last_response_height)
-        , m_last_request_time(other.m_last_request_time)
-        , m_callback_request_count(other.m_callback_request_count.load())
-        , m_last_known_hash(other.m_last_known_hash)
+    cryptonote_connection_context() :
+      m_state(state_before_handshake),
+      m_remote_blockchain_height(0),
+      m_last_response_height(0),
+      m_last_request_time(boost::posix_time::microsec_clock::universal_time()),
+      m_callback_request_count(0),
+      m_last_known_hash(crypto::null_hash)
     {}
 
-  
+    // 🧩 Explicitly define copy constructor
+    cryptonote_connection_context(const cryptonote_connection_context& other)
+      : epee::net_utils::connection_context_base(other),
+        m_state(other.m_state),
+        m_needed_objects(other.m_needed_objects),
+        m_requested_objects(other.m_requested_objects),
+        m_remote_blockchain_height(other.m_remote_blockchain_height),
+        m_last_response_height(other.m_last_response_height),
+        m_last_request_time(other.m_last_request_time),
+        m_callback_request_count(other.m_callback_request_count.load()),
+        m_last_known_hash(other.m_last_known_hash)
+    {}
+
+    // 🧩 Explicitly define assignment operator
+    cryptonote_connection_context& operator=(const cryptonote_connection_context& other)
+    {
+      if (this != &other)
+      {
+        epee::net_utils::connection_context_base::operator=(other);
+        m_state = other.m_state;
+        m_needed_objects = other.m_needed_objects;
+        m_requested_objects = other.m_requested_objects;
+        m_remote_blockchain_height = other.m_remote_blockchain_height;
+        m_last_response_height = other.m_last_response_height;
+        m_last_request_time = other.m_last_request_time;
+        m_callback_request_count = other.m_callback_request_count.load();
+        m_last_known_hash = other.m_last_known_hash;
+      }
+      return *this;
+    }
+
     enum state
     {
-      state_before_handshake = 0, // default state
+      state_before_handshake = 0,
       state_synchronizing,
       state_standby,
       state_idle,
       state_normal
     };
-  
+
     state m_state;
     std::list<crypto::hash> m_needed_objects;
     std::unordered_set<crypto::hash> m_requested_objects;
     uint64_t m_remote_blockchain_height;
     uint64_t m_last_response_height;
     boost::posix_time::ptime m_last_request_time;
-    epee::copyable_atomic m_callback_request_count; // for debugging: double callback prevention
+    epee::copyable_atomic m_callback_request_count;
     crypto::hash m_last_known_hash;
   };
-
 
   inline std::string get_protocol_state_string(cryptonote_connection_context::state s)
   {
     switch (s)
     {
-      case cryptonote_connection_context::state_before_handshake:
-        return "state_before_handshake";
-      case cryptonote_connection_context::state_synchronizing:
-        return "state_synchronizing";
-      case cryptonote_connection_context::state_standby:
-        return "state_standby";
-      case cryptonote_connection_context::state_idle:
-        return "state_idle";
-      case cryptonote_connection_context::state_normal:
-        return "state_normal";
-      default:
-        return "unknown";
+      case cryptonote_connection_context::state_before_handshake: return "state_before_handshake";
+      case cryptonote_connection_context::state_synchronizing:    return "state_synchronizing";
+      case cryptonote_connection_context::state_standby:          return "state_standby";
+      case cryptonote_connection_context::state_idle:             return "state_idle";
+      case cryptonote_connection_context::state_normal:           return "state_normal";
+      default:                                                    return "unknown";
     }
   }
 
-} // namespace cryptonote
+}
