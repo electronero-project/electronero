@@ -29,6 +29,11 @@
 // Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
 #pragma once
+namespace boost {
+namespace serialization {
+    using library_version_type = unsigned int;
+} }
+
 #include <boost/asio/io_service.hpp>
 #include <boost/serialization/serialization.hpp>
 #define BOOST_SERIALIZATION_VERSION_HPP
