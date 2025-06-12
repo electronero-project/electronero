@@ -31,10 +31,7 @@
 #pragma once
 
 #include <memory>
-namespace boost {
-namespace serialization {
-    using library_version_type = unsigned int;
-} }
+#include <boost/serialization/library_version_type.hpp>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
