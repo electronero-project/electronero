@@ -27,8 +27,11 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
-
 #pragma once
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-copy"
+
 #include <unordered_set>
 #include <atomic>
 #include "net/net_utils_base.h"
@@ -37,47 +40,14 @@
 namespace cryptonote
 {
 
-  struct cryptonote_connection_context : public epee::net_utils::connection_context_base
+  struct cryptonote_connection_context: public epee::net_utils::connection_context_base
   {
-    cryptonote_connection_context() :
-      m_state(state_before_handshake),
-      m_remote_blockchain_height(0),
-      m_last_response_height(0),
-      m_last_request_time(boost::posix_time::microsec_clock::universal_time()),
-      m_callback_request_count(0),
-      m_last_known_hash(crypto::null_hash)
-    {}
+    cryptonote_connection_context(): m_state(state_before_handshake), m_remote_blockchain_height(0), m_last_response_height(0),
+        m_last_request_time(boost::posix_time::microsec_clock::universal_time()), m_callback_request_count(0), m_last_known_hash(crypto::null_hash) {}
 
-    // 🧩 Explicitly define copy constructor
-    cryptonote_connection_context(const cryptonote_connection_context& other)
-      : epee::net_utils::connection_context_base(other),
-        m_state(other.m_state),
-        m_needed_objects(other.m_needed_objects),
-        m_requested_objects(other.m_requested_objects),
-        m_remote_blockchain_height(other.m_remote_blockchain_height),
-        m_last_response_height(other.m_last_response_height),
-        m_last_request_time(other.m_last_request_time),
-        m_callback_request_count(other.m_callback_request_count.load()),
-        m_last_known_hash(other.m_last_known_hash)
-    {}
-
-    // 🧩 Explicitly define assignment operator
-    cryptonote_connection_context& operator=(const cryptonote_connection_context& other)
-    {
-      if (this != &other)
-      {
-        epee::net_utils::connection_context_base::operator=(other);
-        m_state = other.m_state;
-        m_needed_objects = other.m_needed_objects;
-        m_requested_objects = other.m_requested_objects;
-        m_remote_blockchain_height = other.m_remote_blockchain_height;
-        m_last_response_height = other.m_last_response_height;
-        m_last_request_time = other.m_last_request_time;
-        m_callback_request_count = other.m_callback_request_count.load();
-        m_last_known_hash = other.m_last_known_hash;
-      }
-      return *this;
-    }
+    // Explicitly default the copy constructor and assignment operator
+    cryptonote_connection_context(const cryptonote_connection_context&) = default;
+    cryptonote_connection_context& operator=(const cryptonote_connection_context&) = default;
 
     enum state
     {
@@ -112,3 +82,5 @@ namespace cryptonote
   }
 
 }
+
+#pragma GCC diagnostic pop
