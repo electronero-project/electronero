@@ -27,9 +27,10 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <boost/serialization/version.hpp>
 #include "serialization/keyvalue_serialization.h"
 #include <boost/serialization/serialization.hpp>
-#include <boost/serialization/version.hpp>
+
 #include <ostream>
 
 namespace cryptonote
@@ -100,3 +101,4 @@ namespace boost {
     }
   }
 }
+  
