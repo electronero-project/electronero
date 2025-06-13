@@ -31,10 +31,10 @@
 #pragma once
 #include <boost/serialization/library_version_type.hpp>
 #include <boost/asio/io_service.hpp>
-#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/list.hpp>
 #define BOOST_SERIALIZATION_VERSION_HPP
 #include <boost/serialization/version.hpp>
-#include <boost/serialization/list.hpp>
+#include <boost/serialization/serialization.hpp>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/global_fun.hpp>
 #include <boost/multi_index/hashed_index.hpp>
