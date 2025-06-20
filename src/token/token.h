@@ -5,7 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <boost/serialization/serialization.hpp>
-#define BOOST_SERIALIZATION_VERSION_HPP
+// #define BOOST_SERIALIZATION_VERSION_HPP
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/library_version_type.hpp>
 #include <boost/serialization/string.hpp>
