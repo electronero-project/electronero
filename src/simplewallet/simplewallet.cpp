@@ -5443,8 +5443,8 @@ bool simple_wallet::token_create(const std::vector<std::string> &args)
   dsts.push_back({TOKEN_DEPLOYMENT_FEE, ginfo.address, ginfo.is_subaddress});
 
   std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
-  token_info &info = m_tokens.create(args[0], args[1], supply, creator, creator_fee);
-  std::string extra_str = make_token_extra(token_op_type::create, {info.address, args[0], args[1], std::to_string(supply), creator, std::to_string(creator_fee)});
+  ::token_info &info = m_tokens.create(args[0], args[1], supply, creator, creator_fee);
+  std::string extra_str = make_token_extra(token_op_type::create, std::vector<std::string>{info.address, args[0], args[1], std::to_string(supply), creator, std::to_string(creator_fee)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(!submit_token_tx(dsts, extra))
@@ -5482,7 +5482,7 @@ bool simple_wallet::token_transfer(const std::vector<std::string> &args)
     return true;
   }
   std::string from = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
-  token_info *tk = m_tokens.get_by_address(args[0]);
+  ::token_info *tk = m_tokens.get_by_address(args[0]);
   if(!tk)
   {
     fail_msg_writer() << tr("token not found");
@@ -5508,7 +5508,7 @@ bool simple_wallet::token_transfer(const std::vector<std::string> &args)
   if(tk->creator_fee > 0)
     dsts.push_back({tk->creator_fee, creator_info.address, creator_info.is_subaddress});
   dsts.push_back({1, self.address, self.is_subaddress});
-  std::string extra_str = make_token_extra(token_op_type::transfer, {args[0], from, args[1], std::to_string(amount)});
+  std::string extra_str = make_token_extra(token_op_type::transfer, std::vector<std::string>{args[0], from, args[1], std::to_string(amount)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(!submit_token_tx(dsts, extra))
@@ -5542,7 +5542,7 @@ bool simple_wallet::token_approve(const std::vector<std::string> &args)
   cryptonote::get_account_address_from_str(self, m_wallet->nettype(), owner);
   std::vector<cryptonote::tx_destination_entry> dsts;
   dsts.push_back({1, self.address, self.is_subaddress});
-  std::string extra_str = make_token_extra(token_op_type::approve, {args[0], owner, args[1], std::to_string(amount)});
+  std::string extra_str = make_token_extra(token_op_type::approve, std::vector<std::string>{args[0], owner, args[1], std::to_string(amount)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(!submit_token_tx(dsts, extra))
@@ -5566,7 +5566,7 @@ bool simple_wallet::token_transfer_from(const std::vector<std::string> &args)
     fail_msg_writer() << tr("invalid amount");
     return true;
   }
-  token_info *tk = m_tokens.get_by_address(args[0]);
+  ::token_info *tk = m_tokens.get_by_address(args[0]);
   if(!tk)
   {
     fail_msg_writer() << tr("token not found");
@@ -5593,7 +5593,7 @@ bool simple_wallet::token_transfer_from(const std::vector<std::string> &args)
   if(tk->creator_fee > 0)
     dsts.push_back({tk->creator_fee, creator_info.address, creator_info.is_subaddress});
   dsts.push_back({1, self.address, self.is_subaddress});
-  std::string extra_str = make_token_extra(token_op_type::transfer_from, {args[0], spender, args[1], args[2], std::to_string(amount)});
+  std::string extra_str = make_token_extra(token_op_type::transfer_from, std::vector<std::string>{args[0], spender, args[1], args[2], std::to_string(amount)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(!submit_token_tx(dsts, extra))
@@ -5611,7 +5611,7 @@ bool simple_wallet::token_info(const std::vector<std::string> &args)
     fail_msg_writer() << tr("usage: token_info <token_address>");
     return true;
   }
-  const token_info *info = m_tokens.get_by_address(args[0]);
+  const ::token_info *info = m_tokens.get_by_address(args[0]);
   if(!info)
   {
     fail_msg_writer() << tr("token not found");
@@ -5625,7 +5625,7 @@ bool simple_wallet::token_info(const std::vector<std::string> &args)
 //------------------------------------------------------------------------------
 bool simple_wallet::all_tokens(const std::vector<std::string> &args)
 {
-  std::vector<token_info> list;
+  std::vector<::token_info> list;
   m_tokens.list_all(list);
   for(const auto &t : list)
   {
@@ -5637,7 +5637,7 @@ bool simple_wallet::all_tokens(const std::vector<std::string> &args)
 bool simple_wallet::my_tokens(const std::vector<std::string> &args)
 {
   std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
-  std::vector<token_info> list;
+  std::vector<::token_info> list;
   m_tokens.list_by_creator(creator, list);
   for(const auto &t : list)
   {
@@ -5704,7 +5704,7 @@ bool simple_wallet::token_set_fee(const std::vector<std::string> &args)
   }
   std::vector<cryptonote::tx_destination_entry> dsts;
   dsts.push_back({TOKEN_DEPLOYMENT_FEE, ginfo.address, ginfo.is_subaddress});
-  std::string extra_str = make_token_extra(token_op_type::set_fee, {args[0], creator, std::to_string(fee)});
+  std::string extra_str = make_token_extra(token_op_type::set_fee, std::vector<std::string>{args[0], creator, std::to_string(fee)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(!submit_token_tx(dsts, extra))

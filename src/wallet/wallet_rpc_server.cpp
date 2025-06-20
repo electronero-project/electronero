@@ -2922,10 +2922,10 @@ bool wallet_rpc_server::on_token_create(const wallet_rpc::COMMAND_RPC_TOKEN_CREA
     er.message = "Invalid governance address";
     return false;
   }
-  dsts.push_back({TOKEN_DEPLOYMENT_FEE, info.address, false, info.is_subaddress});
+  dsts.push_back({TOKEN_DEPLOYMENT_FEE, info.address, info.is_subaddress});
   std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
-  token_info &tk = m_tokens.create(req.name, req.symbol, req.supply, creator, req.creator_fee);
-  std::string extra_str = make_token_extra(token_op_type::create, {tk.address, req.name, req.symbol, std::to_string(req.supply), creator, std::to_string(req.creator_fee)});
+  ::token_info &tk = m_tokens.create(req.name, req.symbol, req.supply, creator, req.creator_fee);
+  std::string extra_str = make_token_extra(token_op_type::create, std::vector<std::string>{tk.address, req.name, req.symbol, std::to_string(req.supply), creator, std::to_string(req.creator_fee)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   auto ptx_vector = m_wallet->create_transactions_2(dsts, 0, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
@@ -2955,7 +2955,7 @@ bool wallet_rpc_server::on_token_transfer(const wallet_rpc::COMMAND_RPC_TOKEN_TR
 {
   if (!m_wallet) return not_open(er);
   std::string from = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
-  token_info *tk = m_tokens.get_by_address(req.token_address);
+  ::token_info *tk = m_tokens.get_by_address(req.token_address);
   if(!tk)
   {
     er.code = WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR;
@@ -2979,7 +2979,7 @@ bool wallet_rpc_server::on_token_transfer(const wallet_rpc::COMMAND_RPC_TOKEN_TR
   if(tk->creator_fee > 0)
     dsts.push_back({tk->creator_fee, creator_info.address, creator_info.is_subaddress});
   dsts.push_back({1, self.address, self.is_subaddress});
-  std::string extra_str = make_token_extra(token_op_type::transfer, {req.token_address, from, req.to, std::to_string(req.amount)});
+  std::string extra_str = make_token_extra(token_op_type::transfer, std::vector<std::string>{req.token_address, from, req.to, std::to_string(req.amount)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(res.success)
@@ -3004,7 +3004,7 @@ bool wallet_rpc_server::on_token_approve(const wallet_rpc::COMMAND_RPC_TOKEN_APP
   cryptonote::get_account_address_from_str(self, m_wallet->nettype(), owner);
   std::vector<cryptonote::tx_destination_entry> dsts;
   dsts.push_back({1, self.address, self.is_subaddress});
-  std::string extra_str = make_token_extra(token_op_type::approve, {req.name, owner, req.spender, std::to_string(req.amount)});
+  std::string extra_str = make_token_extra(token_op_type::approve, std::vector<std::string>{req.name, owner, req.spender, std::to_string(req.amount)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(res.success)
@@ -3024,7 +3024,7 @@ bool wallet_rpc_server::on_token_transfer_from(const wallet_rpc::COMMAND_RPC_TOK
 {
   if (!m_wallet) return not_open(er);
   std::string spender = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
-  token_info *tk = m_tokens.get_by_address(req.token_address);
+  ::token_info *tk = m_tokens.get_by_address(req.token_address);
   if(!tk)
   {
     er.code = WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR;
@@ -3048,7 +3048,7 @@ bool wallet_rpc_server::on_token_transfer_from(const wallet_rpc::COMMAND_RPC_TOK
   if(tk->creator_fee > 0)
     dsts.push_back({tk->creator_fee, creator_info.address, creator_info.is_subaddress});
   dsts.push_back({1, self.address, self.is_subaddress});
-  std::string extra_str = make_token_extra(token_op_type::transfer_from, {req.token_address, spender, req.from, req.to, std::to_string(req.amount)});
+  std::string extra_str = make_token_extra(token_op_type::transfer_from, std::vector<std::string>{req.token_address, spender, req.from, req.to, std::to_string(req.amount)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(res.success)
@@ -3067,7 +3067,7 @@ bool wallet_rpc_server::on_token_transfer_from(const wallet_rpc::COMMAND_RPC_TOK
 bool wallet_rpc_server::on_token_info(const wallet_rpc::COMMAND_RPC_TOKEN_INFO::request& req, wallet_rpc::COMMAND_RPC_TOKEN_INFO::response& res, epee::json_rpc::error& er)
 {
   if (!m_wallet) return not_open(er);
-  const token_info *info = m_tokens.get_by_address(req.token_address);
+  const ::token_info *info = m_tokens.get_by_address(req.token_address);
   if(!info)
   {
     er.code = WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR;
@@ -3083,7 +3083,7 @@ bool wallet_rpc_server::on_token_info(const wallet_rpc::COMMAND_RPC_TOKEN_INFO::
 bool wallet_rpc_server::on_all_tokens(const wallet_rpc::COMMAND_RPC_TOKEN_ALL::request& req, wallet_rpc::COMMAND_RPC_TOKEN_ALL::response& res, epee::json_rpc::error& er)
 {
   if (!m_wallet) return not_open(er);
-  std::vector<token_info> list;
+  std::vector<::token_info> list;
   m_tokens.list_all(list);
   for(const auto &t : list)
   {
@@ -3101,7 +3101,7 @@ bool wallet_rpc_server::on_my_tokens(const wallet_rpc::COMMAND_RPC_TOKEN_MINE::r
 {
   if (!m_wallet) return not_open(er);
   std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
-  std::vector<token_info> list;
+  std::vector<::token_info> list;
   m_tokens.list_by_creator(creator, list);
   for(const auto &t : list)
   {
@@ -3151,7 +3151,7 @@ bool wallet_rpc_server::on_token_history_addr(const wallet_rpc::COMMAND_RPC_TOKE
 bool wallet_rpc_server::on_token_set_fee(const wallet_rpc::COMMAND_RPC_TOKEN_SET_FEE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_SET_FEE::response& res, epee::json_rpc::error& er)
 {
   if (!m_wallet) return not_open(er);
-  token_info *tk = m_tokens.get_by_address(req.token_address);
+  ::token_info *tk = m_tokens.get_by_address(req.token_address);
   if(!tk || tk->creator != m_wallet->get_account().get_public_address_str(m_wallet->nettype()))
   {
     res.success = false;
@@ -3167,7 +3167,7 @@ bool wallet_rpc_server::on_token_set_fee(const wallet_rpc::COMMAND_RPC_TOKEN_SET
   }
   std::vector<cryptonote::tx_destination_entry> dsts;
   dsts.push_back({TOKEN_DEPLOYMENT_FEE, info.address, info.is_subaddress});
-  std::string extra_str = make_token_extra(token_op_type::set_fee, {req.token_address, tk->creator, std::to_string(req.creator_fee)});
+  std::string extra_str = make_token_extra(token_op_type::set_fee, std::vector<std::string>{req.token_address, tk->creator, std::to_string(req.creator_fee)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(res.success)
