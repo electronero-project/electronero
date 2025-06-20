@@ -147,7 +147,7 @@ namespace cryptonote
         MAP_JON_RPC_WE_IF("set_bans",            on_set_bans,                   COMMAND_RPC_SETBANS, !m_restricted)
         MAP_JON_RPC_WE_IF("get_bans",            on_get_bans,                   COMMAND_RPC_GETBANS, !m_restricted)
         MAP_JON_RPC_WE_IF("flush_txpool",        on_flush_txpool,               COMMAND_RPC_FLUSH_TRANSACTION_POOL, !m_restricted)
-        MAP_JON_RPC_WE_IF("rescan_token_tx",    on_rescan_token_tx,            COMMAND_RPC_RESCAN_TOKEN_TX, !m_restricted)
+        MAP_JON_RPC_WE_IF("rescan_token_tx",    on_rescan_token_tx,           COMMAND_RPC_RESCAN_TOKEN_TX, !m_restricted)
         MAP_JON_RPC_WE("get_output_histogram",   on_get_output_histogram,       COMMAND_RPC_GET_OUTPUT_HISTOGRAM)
         MAP_JON_RPC_WE("get_version",            on_get_version,                COMMAND_RPC_GET_VERSION)
         MAP_JON_RPC_WE_IF("get_coinbase_tx_sum", on_get_coinbase_tx_sum,        COMMAND_RPC_GET_COINBASE_TX_SUM, !m_restricted)

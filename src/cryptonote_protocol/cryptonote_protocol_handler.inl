@@ -42,6 +42,7 @@
 #include "common/util.h"
 
 #include "cryptonote_basic/cryptonote_format_utils.h"
+#include "cryptonote_core/blockchain.h"
 #include "profile_tools.h"
 #include "net/network_throttle-detail.hpp"
 
