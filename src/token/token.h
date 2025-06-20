@@ -8,6 +8,9 @@
 #include <boost/serialization/unordered_map.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/string.hpp>
+#define BOOST_SERIALIZATION_VERSION_HPP
+#include <boost/serialization/library_version_type.hpp>
+#include <boost/serialization/version.hpp>
 
 enum class token_op_type : uint8_t {
     create = 0,

@@ -232,7 +232,12 @@ bool parse_token_extra(const std::string &data, token_op_type &op, std::vector<s
 
 void token_store::record_transfer(const std::string &token_address, const std::string &from, const std::string &to, uint64_t amount)
 {
-    transfer_history.push_back({token_address, from, to, amount});
+    token_transfer_record rec;
+    rec.token_address = token_address;
+    rec.from = from;
+    rec.to = to;
+    rec.amount = amount;
+    transfer_history.push_back(rec);
 }
 
 void token_store::history_by_token(const std::string &token_address, std::vector<token_transfer_record> &out) const
