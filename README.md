@@ -536,7 +536,7 @@ Use `token_info` with the token address to query a token's metadata.
 All token transactions use your wallet's default ring size (mixin) when constructing the underlying fee transaction, ensuring they are valid and private by default.
 
 ## Token Smart Contracts
-Electronero provides a lightweight XRC=20 token system similar to ERC‑20. 
+Electronero provides a lightweight XRC-20 token system similar to ERC‑20. 
 Token actions are encoded in the transaction `tx_extra` field and shared between peers. 
 The following commands are available in both the CLI and RPC:
 
