@@ -94,7 +94,7 @@ BOOST_CLASS_VERSION(cryptonote::subaddress_index, 0)
 namespace boost {
   namespace serialization {
     template <class Archive>
-    inline void serialize(Archive &a, cryptonote::subaddress_index &x, const boost::serialization::version_type /*ver*/)
+    inline void serialize(Archive &a, cryptonote::subaddress_index &x, const boost::serialization::version_type ver)
     {
       a & x.major;
       a & x.minor;
