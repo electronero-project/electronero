@@ -825,6 +825,10 @@ namespace cryptonote
               {
                 m_tokens.transfer_from_by_address(parts[0], parts[1], parts[2], parts[3], std::stoull(parts[4]));
               }
+              else if(op == token_op_type::set_fee && parts.size() == 3)
+              {
+                m_tokens.set_creator_fee(parts[0], parts[1], std::stoull(parts[2]));
+              }
               if(!m_tokens_path.empty())
                 m_tokens.save(m_tokens_path);
             }
