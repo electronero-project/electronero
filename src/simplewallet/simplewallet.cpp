@@ -5398,7 +5398,8 @@ bool simple_wallet::submit_token_tx(const std::vector<cryptonote::tx_destination
 {
   try
   {
-    auto ptx_vector = m_wallet->create_transactions_2(dsts, 0, 0, m_wallet->adjust_priority(0), extra, m_current_subaddress_account, {}, m_trusted_daemon);
+    size_t mixin = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
+    auto ptx_vector = m_wallet->create_transactions_2(dsts, mixin, 0, m_wallet->adjust_priority(0), extra, m_current_subaddress_account, {}, m_trusted_daemon);
     if(ptx_vector.empty())
     {
       fail_msg_writer() << tr("failed to create token transaction");
@@ -5714,7 +5715,6 @@ bool simple_wallet::token_set_fee(const std::vector<std::string> &args)
   success_msg_writer() << tr("creator fee updated");
   return true;
 }
-//------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 bool simple_wallet::accept_loaded_tx(const std::function<size_t()> get_num_txes, const std::function<const tools::wallet2::tx_construction_data&(size_t)> &get_tx, const std::string &extra_message)
 {

@@ -2910,7 +2910,6 @@ namespace tools
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
 bool wallet_rpc_server::on_token_create(const wallet_rpc::COMMAND_RPC_TOKEN_CREATE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_CREATE::response& res, epee::json_rpc::error& er)
 {
   if (!m_wallet) return not_open(er);
@@ -2928,7 +2927,8 @@ bool wallet_rpc_server::on_token_create(const wallet_rpc::COMMAND_RPC_TOKEN_CREA
   std::string extra_str = make_token_extra(token_op_type::create, std::vector<std::string>{tk.address, req.name, req.symbol, std::to_string(req.supply), creator, std::to_string(req.creator_fee)});
   std::vector<uint8_t> extra;
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
-  auto ptx_vector = m_wallet->create_transactions_2(dsts, 0, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
+  size_t mixin = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
+  auto ptx_vector = m_wallet->create_transactions_2(dsts, mixin, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
   if(ptx_vector.empty())
   {
     er.code = WALLET_RPC_ERROR_CODE_TX_NOT_POSSIBLE;
@@ -2984,7 +2984,8 @@ bool wallet_rpc_server::on_token_transfer(const wallet_rpc::COMMAND_RPC_TOKEN_TR
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(res.success)
   {
-    auto ptx_vector = m_wallet->create_transactions_2(dsts, 0, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
+    size_t mixin = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
+    auto ptx_vector = m_wallet->create_transactions_2(dsts, mixin, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
     if(ptx_vector.empty())
       res.success = false;
     else
@@ -3009,7 +3010,8 @@ bool wallet_rpc_server::on_token_approve(const wallet_rpc::COMMAND_RPC_TOKEN_APP
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(res.success)
   {
-    auto ptx_vector = m_wallet->create_transactions_2(dsts, 0, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
+    size_t mixin = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
+    auto ptx_vector = m_wallet->create_transactions_2(dsts, mixin, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
     if(ptx_vector.empty())
       res.success = false;
     else
@@ -3053,7 +3055,8 @@ bool wallet_rpc_server::on_token_transfer_from(const wallet_rpc::COMMAND_RPC_TOK
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(res.success)
   {
-    auto ptx_vector = m_wallet->create_transactions_2(dsts, 0, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
+    size_t mixin = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
+    auto ptx_vector = m_wallet->create_transactions_2(dsts, mixin, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
     if(ptx_vector.empty())
       res.success = false;
     else
@@ -3172,7 +3175,8 @@ bool wallet_rpc_server::on_token_set_fee(const wallet_rpc::COMMAND_RPC_TOKEN_SET
   cryptonote::add_token_data_to_tx_extra(extra, extra_str);
   if(res.success)
   {
-    auto ptx_vector = m_wallet->create_transactions_2(dsts, 0, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
+    size_t mixin = m_wallet->default_mixin() > 0 ? m_wallet->default_mixin() : DEFAULT_MIXIN;
+    auto ptx_vector = m_wallet->create_transactions_2(dsts, mixin, 0, m_wallet->adjust_priority(0), extra, 0, {}, m_trusted_daemon);
     if(ptx_vector.empty())
       res.success = false;
     else
