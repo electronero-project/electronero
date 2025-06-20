@@ -80,6 +80,26 @@ namespace
 
 namespace tools
 {
+  inline std::string interpret_rpc_response(bool ok, const std::string& status)
+  {
+    std::string err;
+    if (ok)
+    {
+      if (status == CORE_RPC_STATUS_BUSY)
+      {
+        err = wallet_rpc_server::tr("daemon is busy. Please try again later.");
+      }
+      else if (status != CORE_RPC_STATUS_OK)
+      {
+        err = status;
+      }
+    }
+    else
+    {
+      err = wallet_rpc_server::tr("possibly lost connection to daemon");
+    }
+    return err;
+  }
   const char* wallet_rpc_server::tr(const char* str)
   {
     return i18n_translate(str, "tools::wallet_rpc_server");
@@ -2486,8 +2506,8 @@ namespace tools
       return false;
     }
 
-    COMMAND_RPC_RESCAN_TOKEN_TX::request dreq;
-    COMMAND_RPC_RESCAN_TOKEN_TX::response dres;
+    cryptonote::COMMAND_RPC_RESCAN_TOKEN_TX::request dreq;
+    cryptonote::COMMAND_RPC_RESCAN_TOKEN_TX::response dres;
     bool r = m_wallet->invoke_http_json("/rescan_token_tx", dreq, dres);
     std::string err = interpret_rpc_response(r, dres.status);
     if (!err.empty())
