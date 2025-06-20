@@ -2509,10 +2509,10 @@ namespace tools
     cryptonote::COMMAND_RPC_RESCAN_TOKEN_TX::request dreq;
     cryptonote::COMMAND_RPC_RESCAN_TOKEN_TX::response dres;
     bool r = m_wallet->invoke_http_json("/rescan_token_tx", dreq, dres);
-    std::string err = interpret_rpc_response(r, dres.status);
-    if (!err.empty())
+    if (!r || dres.status != CORE_RPC_STATUS_OK)
     {
-      er.message = err;
+      er.code = WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR;
+      er.message = "Failed to rescan token tx";
       return false;
     }
     if(!m_tokens_path.empty())
@@ -3315,23 +3315,6 @@ bool wallet_rpc_server::on_token_history(const wallet_rpc::COMMAND_RPC_TOKEN_HIS
   return true;
 }
 //------------------------------------------------------------------------------------------------------------------------------
-bool wallet_rpc_server::on_rescan_token_tx(const wallet_rpc::COMMAND_RPC_RESCAN_TOKEN_TX::request& req, wallet_rpc::COMMAND_RPC_RESCAN_TOKEN_TX::response& res, epee::json_rpc::error& er)
-{
-  if (!m_wallet) return not_open(er);
-  cryptonote::COMMAND_RPC_RESCAN_TOKEN_TX::request daemon_req;
-  cryptonote::COMMAND_RPC_RESCAN_TOKEN_TX::response daemon_res;
-  bool r = m_wallet->invoke_http_json("/rescan_token_tx", daemon_req, daemon_res);
-  if (!r || daemon_res.status != CORE_RPC_STATUS_OK)
-  {
-    er.code = WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR;
-    er.message = "Failed to rescan token tx";
-    return false;
-  }
-  if(!m_tokens_path.empty())
-    m_tokens.load(m_tokens_path);
-  return true;
-}
-
 bool wallet_rpc_server::on_token_history_addr(const wallet_rpc::COMMAND_RPC_TOKEN_HISTORY_ADDR::request& req, wallet_rpc::COMMAND_RPC_TOKEN_HISTORY_ADDR::response& res, epee::json_rpc::error& er)
 {
   if (!m_wallet) return not_open(er);
