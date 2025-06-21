@@ -16,7 +16,6 @@
 #define MONERO_DEFAULT_LOG_CATEGORY "wallet.token"
 
 bool token_store::load(const std::string &file) {
-    MWARNING("Loading token file " << file);
     std::ifstream ifs(file, std::ios::binary);
     if (!ifs)
     {
@@ -67,7 +66,6 @@ bool token_store::merge_from_string(const std::string &blob) {
 }
 
 bool token_store::save(const std::string &file) {
-    MWARNING("Saving tokens to " << file);
     std::ofstream ofs(file, std::ios::binary | std::ios::trunc);
     if (!ofs)
     {
@@ -99,6 +97,7 @@ bool token_store::store_to_string(std::string &blob) const {
 }
 
 token_info &token_store::create(const std::string &name, const std::string &symbol, uint64_t supply, const std::string &creator, uint64_t creator_fee) {
+    MWARNING("Create: " << name << " symbol: " << symbol << " supply: " << supply);
     auto &tok = tokens[name];
     tok.name = name;
     tok.symbol = symbol;
