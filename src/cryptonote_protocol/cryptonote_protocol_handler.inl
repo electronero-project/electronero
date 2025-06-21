@@ -1843,7 +1843,7 @@ void t_cryptonote_protocol_handler<t_core>::rescan_token_operations(uint64_t fro
       case token_op_type::create:
         if(op == token_op_type::create && (parts.size() == 5 || parts.size() == 6))
         {
-          MWARNING("Token op " << static_cast<int>(op) << " from tx " << epee::string_tools::pod_to_hex(h));
+          MWARNING("create " << parts[1] << " supply " << parts[3]);
           uint64_t creator_fee = parts.size() == 6 ? std::stoull(parts[5]) : 0;
           token_info &info = m_tokens.create(parts[1], parts[2], std::stoull(parts[3]), parts[4], creator_fee);
           info.address = parts[0];
