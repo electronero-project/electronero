@@ -712,10 +712,12 @@ namespace wallet_rpc
     {
       std::string status;
       std::string token_address;
+      std::string tx_hash;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(status)
         KV_SERIALIZE(token_address)
+        KV_SERIALIZE(tx_hash)
       END_KV_SERIALIZE_MAP()
     };
   };
@@ -761,9 +763,11 @@ namespace wallet_rpc
     struct response
     {
       bool success;
+      std::string tx_hash;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
       END_KV_SERIALIZE_MAP()
     };
   };
@@ -786,9 +790,11 @@ namespace wallet_rpc
     struct response
     {
       bool success;
+      std::string tx_hash;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
       END_KV_SERIALIZE_MAP()
     };
   };
@@ -813,9 +819,11 @@ namespace wallet_rpc
     struct response
     {
       bool success;
+      std::string tx_hash;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
       END_KV_SERIALIZE_MAP()
     };
   };
@@ -836,9 +844,11 @@ namespace wallet_rpc
     struct response
     {
       bool success;
+      std::string tx_hash;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
       END_KV_SERIALIZE_MAP()
     };
   };
@@ -859,9 +869,11 @@ namespace wallet_rpc
     struct response
     {
       bool success;
+      std::string tx_hash;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
       END_KV_SERIALIZE_MAP()
     };
   };
@@ -1038,9 +1050,11 @@ namespace wallet_rpc
     struct response
     {
       bool success;
+      std::string tx_hash;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
       END_KV_SERIALIZE_MAP()
     };
   };
