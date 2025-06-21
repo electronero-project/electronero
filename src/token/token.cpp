@@ -30,7 +30,6 @@ bool token_store::load(const std::string &file) {
         tokens = std::move(data.tokens);
         transfer_history = std::move(data.transfers);
         rebuild_indexes();
-        MWARNING("Loaded " << tokens.size() << " tokens from " << file);
     }
     catch(const std::exception &e)
     {
@@ -77,7 +76,6 @@ bool token_store::save(const std::string &file) {
         boost::archive::binary_oarchive oa(ofs);
         token_store_data data{tokens, transfer_history};
         oa << data;
-        MWARNING("Saved " << tokens.size() << " tokens to " << file);
     }
     catch(const std::exception &e)
     {
@@ -97,7 +95,6 @@ bool token_store::store_to_string(std::string &blob) const {
 }
 
 token_info &token_store::create(const std::string &name, const std::string &symbol, uint64_t supply, const std::string &creator, uint64_t creator_fee) {
-    MERROR("Create: " << name << " symbol: " << symbol << " supply: " << supply);
     auto &tok = tokens[name];
     tok.name = name;
     tok.symbol = symbol;
