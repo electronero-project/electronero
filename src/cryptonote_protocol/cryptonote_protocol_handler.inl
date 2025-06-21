@@ -36,6 +36,7 @@
 // developer rfree: this code is caller of our new network code, and is modded; e.g. for rate limiting
 
 #include <boost/interprocess/detail/atomic.hpp>
+#include <iostream>
 #include <list>
 #include <ctime>
 #include <boost/filesystem.hpp>
@@ -1840,9 +1841,11 @@ void t_cryptonote_protocol_handler<t_core>::rescan_token_operations(uint64_t fro
     switch(op)
     {
       case token_op_type::create:
-        if(parts.size() == 5)
+        if(op == token_op_type::create && (parts.size() == 5 || parts.size() == 6))
         {
-          token_info &info = m_tokens.create(parts[1], parts[2], std::stoull(parts[3]), parts[4]);
+          MWARNING("Token op " << static_cast<int>(op) << " from tx " << epee::string_tools::pod_to_hex(h));
+          uint64_t creator_fee = parts.size() == 6 ? std::stoull(parts[5]) : 0;
+          token_info &info = m_tokens.create(parts[1], parts[2], std::stoull(parts[3]), parts[4], creator_fee);
           info.address = parts[0];
         }
         break;
@@ -1886,15 +1889,32 @@ void t_cryptonote_protocol_handler<t_core>::rescan_token_operations(uint64_t fro
   };
 
   uint64_t end = top - 1;
-  bc.for_blocks_range(from_height, end, [this, &bc, &process_tx](uint64_t, const crypto::hash&, const cryptonote::block& b){
+  uint64_t total_blocks = end - from_height + 1;
+  uint64_t scanned_blocks = 0;
+  uint64_t scanned_txs = 0;
+  const uint64_t progress_interval = 1000;
+  bc.for_blocks_range(from_height, end, [this, &bc, &process_tx, &scanned_blocks, &scanned_txs, total_blocks, progress_interval](uint64_t, const crypto::hash&, const cryptonote::block& b){
     process_tx(b.miner_tx);
+    ++scanned_txs;
+    ++scanned_blocks;
     std::list<cryptonote::transaction> txs;
     std::list<crypto::hash> missed;
     bc.get_transactions(b.tx_hashes, txs, missed);
     for (const auto &tx : txs)
+    {
       process_tx(tx);
+    }
+    scanned_txs += txs.size();
+    if (scanned_blocks % progress_interval == 0 || scanned_blocks == total_blocks)
+    {
+      std::vector<token_info> list;
+      m_tokens.list_all(list);
+      std::cout << "\r" << scanned_blocks << "/" << total_blocks << " blocks scanned, "
+                << list.size() << " tokens found, " << scanned_txs << " transactions" << std::flush;
+    }
     return true;
   });
+  std::cout << std::endl;
 
   if(!m_tokens_path.empty())
     m_tokens.save(m_tokens_path);
