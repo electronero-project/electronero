@@ -13,11 +13,14 @@ It relies on `electronero.php` for JSON-RPC interaction.
 php modules/PHP/telegram.php
 ```
 
-The bot uses long polling to receive updates.
+The bot uses long polling to receive updates and provides a simple menu system.
 
 ## Usage
 
-- `/help` &mdash; lists all available RPC commands.
+- `/menu` &mdash; shows buttons for "Wallet" and "Daemon" RPC groups.
+- `/wallet` &mdash; displays a keyboard with wallet RPC methods.
+- `/daemon` &mdash; displays a keyboard with daemon RPC methods.
+- `/help` &mdash; lists all available RPC commands as plain text.
 - Any other command `/method {json}` calls the corresponding RPC method.
   - `method` must match a wallet or daemon RPC name.
   - Optional JSON parameters can be supplied after a space.

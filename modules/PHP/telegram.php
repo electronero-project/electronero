@@ -25,17 +25,53 @@ function apiRequest($method, $params = []) {
     return json_decode($res, true);
 }
 
-function sendMessage($chatId, $text) {
-    apiRequest('sendMessage', [
+function sendMessage($chatId, $text, array $replyMarkup = []) {
+    $payload = [
         'chat_id' => $chatId,
-        'text' => $text
-    ]);
+        'text'    => $text
+    ];
+    if ($replyMarkup) {
+        $payload['reply_markup'] = json_encode($replyMarkup);
+    }
+    apiRequest('sendMessage', $payload);
+}
+
+function buildKeyboard(array $methods) {
+    $rows = [];
+    $chunk = array_chunk($methods, 2);
+    foreach ($chunk as $pair) {
+        $row = [];
+        foreach ($pair as $m) {
+            $row[] = '/' . $m;
+        }
+        $rows[] = $row;
+    }
+    return [
+        'keyboard' => $rows,
+        'resize_keyboard' => true
+    ];
+}
+
+function sendMainMenu($chatId) {
+    $menu = [
+        'keyboard' => [
+            ['/wallet'],
+            ['/daemon']
+        ],
+        'resize_keyboard' => true
+    ];
+    sendMessage($chatId, "Choose a command group:", $menu);
 }
 
 function handleCommand($chatId, $text, $rpc) {
     $text = trim($text);
     if ($text === '/start') {
-        sendMessage($chatId, "Welcome to the Electronero bot. Use /help for a list of RPC commands.");
+        sendMessage($chatId, "Welcome to the Electronero bot. Use /wallet or /daemon to view available RPC commands.");
+        sendMainMenu($chatId);
+        return;
+    }
+    if ($text === '/menu') {
+        sendMainMenu($chatId);
         return;
     }
     if ($text === '/help') {
@@ -43,6 +79,16 @@ function handleCommand($chatId, $text, $rpc) {
         $daemon = implode("\n", $rpc->listDaemonMethods());
         $msg = "Wallet RPC:\n$wallet\n\nDaemon RPC:\n$daemon\n";
         sendMessage($chatId, $msg);
+        return;
+    }
+    if ($text === '/wallet') {
+        $kb = buildKeyboard($rpc->listWalletMethods());
+        sendMessage($chatId, 'Wallet RPC methods:', $kb);
+        return;
+    }
+    if ($text === '/daemon') {
+        $kb = buildKeyboard($rpc->listDaemonMethods());
+        sendMessage($chatId, 'Daemon RPC methods:', $kb);
         return;
     }
     if ($text[0] === '/') {
