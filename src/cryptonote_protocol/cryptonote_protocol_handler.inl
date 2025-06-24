@@ -1844,12 +1844,6 @@ void t_cryptonote_protocol_handler<t_core>::rescan_token_operations(uint64_t fro
 
 //----------------------------------------------------------------------------------------------------
 template<class t_core>
-void t_cryptonote_protocol_handler<t_core>::process_token_tx(const cryptonote::transaction &tx)
-{
-  process_token_tx(tx, m_core.get_current_blockchain_height());
-}
-
-template<class t_core>
 void t_cryptonote_protocol_handler<t_core>::process_token_tx(const cryptonote::transaction &tx, uint64_t height)
 {
   std::vector<cryptonote::tx_extra_field> fields;
