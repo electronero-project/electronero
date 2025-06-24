@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Home({ navigation, route }) {
   const [balance, setBalance] = useState(null);
@@ -95,7 +96,7 @@ export default function Home({ navigation, route }) {
   }, [route.params]);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#FFD700', '#808080', '#000']} style={styles.container}>
       <Text style={styles.balanceLabel}>Balance:</Text>
       <Text style={styles.balance}>{balance}</Text>
       <Button title="Transfer" onPress={() => navigation.navigate('Transfer')} />
@@ -111,7 +112,7 @@ export default function Home({ navigation, route }) {
           </TouchableOpacity>
         )}
       />
-    </View>
+    </LinearGradient>
   );
 }
 

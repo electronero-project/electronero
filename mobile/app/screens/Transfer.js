@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Transfer() {
   const [address, setAddress] = useState('');
@@ -21,7 +22,7 @@ export default function Transfer() {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#FFD700', '#808080', '#000']} style={styles.container}>
       <TextInput
         placeholder="Public Address"
         value={address}
@@ -36,7 +37,7 @@ export default function Transfer() {
         style={styles.input}
       />
       <Button title="Send" onPress={send} />
-    </View>
+    </LinearGradient>
   );
 }
 

@@ -1,7 +1,6 @@
 # React Native Mobile App
 
-This directory contains a simple React Native application using Expo. It includes
-four pages:
+This directory contains a simple React Native application using Expo. It includes four pages and uses a yellow‑to‑gray‑to‑black gradient background throughout:
 
 - **Sign In** – enter your email and password, then confirm a 5-digit PIN code. On success, the balance and transaction history are returned and passed to the Home page.
 - **Home** – displays the current balance and a list of recent transactions from

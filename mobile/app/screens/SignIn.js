@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Modal, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Modal, Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function SignIn({ navigation }) {
   const [email, setEmail] = useState('');
@@ -46,9 +47,8 @@ export default function SignIn({ navigation }) {
       .catch(err => console.error(err));
   };
 
-
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#FFD700', '#808080', '#000']} style={styles.container}>
       <TextInput
         placeholder="Email"
         value={email}
@@ -63,24 +63,38 @@ export default function SignIn({ navigation }) {
         style={styles.input}
       />
       <Button title="Sign In" onPress={handleSignIn} />
-
-      <Modal visible={showPin} transparent>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text>Enter 5-digit PIN</Text>
-            <TextInput
-              value={pin}
-              onChangeText={setPin}
-              keyboardType="numeric"
-              secureTextEntry
-              maxLength={5}
-              style={styles.input}
-            />
-            <Button title="Submit" onPress={submitPin} />
-          </View>
-        </View>
+      <Modal
+        visible={showPin}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowPin(false)}
+      >
+        <Pressable style={styles.modalContainer} onPress={() => setShowPin(false)}>
+          <Pressable style={styles.modalContent} onPress={() => {}}>
+            <TouchableOpacity style={styles.closeBtn} onPress={() => setShowPin(false)}>
+              <Text style={styles.closeText}>X</Text>
+            </TouchableOpacity>
+            <Text style={styles.pinLabel}>Enter 5-digit PIN</Text>
+            <Text style={styles.pinDisplay}>{'\u25CF'.repeat(pin.length)}</Text>
+            {[[1,2,3],[4,5,6],[7,8,9],[null,0,null]].map((row, rIdx) => (
+              <View key={rIdx} style={styles.keypadRow}>
+                {row.map((num, cIdx) => (
+                  <TouchableOpacity
+                    key={cIdx}
+                    style={styles.key}
+                    disabled={num === null || pin.length >= 5}
+                    onPress={() => setPin(p => p + String(num))}
+                  >
+                    <Text style={styles.keyText}>{num !== null ? num : ''}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ))}
+            <Button title="Submit" onPress={() => { setShowPin(false); submitPin(); }} />
+          </Pressable>
+        </Pressable>
       </Modal>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -107,6 +121,43 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 16,
     borderRadius: 4,
-    width: '80%'
+    width: '80%',
+    alignItems: 'center'
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1
+  },
+  closeText: {
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  pinLabel: {
+    marginTop: 16,
+    marginBottom: 8,
+    fontWeight: 'bold'
+  },
+  pinDisplay: {
+    fontSize: 24,
+    marginBottom: 16
+  },
+  keypadRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 12
+  },
+  key: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#eee'
+  },
+  keyText: {
+    fontSize: 18
   }
 });
