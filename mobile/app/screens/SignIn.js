@@ -29,7 +29,7 @@ export default function SignIn({ navigation }) {
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        if (data.status.success) {
+        if (data.status == 'success') {
           navigation.navigate('Home', {
             email: email,
             password: password,
