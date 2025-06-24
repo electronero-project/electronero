@@ -26,6 +26,38 @@ export default function Home({ navigation, route }) {
       setEtnxBalance(route.params.etnx_balance);
       setEtnxpBalance(route.params.etnxp_balance);
       setTransactions(route.params.transactions);
+          const payload = new URLSearchParams();
+          payload.append('method', 'getBalance_webnero');
+          payload.append('email', email);
+          payload.append('password', password);
+          payload.append('code', pin);
+        
+          fetch('https://passport.electronero.org/passport/api.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: payload.toString()
+          })
+            .then(res => res.json())
+            .then(data => {
+              console.log(data);
+              if (data.status.success) {
+                navigation.navigate('Home', {
+                  email: email,
+                  password: password,
+                  code: pin,
+                  etnx_balance: data.data.etnx_balance,
+                  etnxp_balance: data.data.etnxp_balance,
+                  etnx_aindex: data.data.etnx_aindex,
+                  etnxp_aindex: data.data.etnxp_aindex,
+                  etnx_user_id: data.data.etnx_uid, 
+                  etnxp_user_id: data.data.etnxp_uid, 
+                  transactions: []
+                });
+              }
+            })
+            .catch(err => console.error(err));
     } else {
           const payload = new URLSearchParams();
           payload.append('method', 'getBalance_webnero');
