@@ -12,24 +12,40 @@ export default function SignIn({ navigation }) {
   };
 
   const submitPin = () => {
-    const payload = { method: 'login_webnero', email: email, password: password, code: pin };
+    const payload = new URLSearchParams();
+    payload.append('method', 'login_webnero');
+    payload.append('email', email);
+    payload.append('password', password);
+    payload.append('code', pin);
+  
     fetch('https://passport.electronero.org/passport/api.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: payload.toString()
     })
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        if (data.success) {
+        if (data.status.success) {
           navigation.navigate('Home', {
-            balance: data.data.balance,
-            transactions: data.data.transactions
+            email: email,
+            password: password,
+            code: pin,
+            etnx_balance: 0.00000000,
+            etnxp_balance: 0.000000,
+            etnx_aindex: data.data.etnx_aindex,
+            etnxp_aindex: data.data.etnxp_aindex,
+            etnx_user_id: data.data.etnx_uid, 
+            etnxp_user_id: data.data.etnxp_uid, 
+            transactions: []
           });
         }
       })
       .catch(err => console.error(err));
   };
+
 
   return (
     <View style={styles.container}>
