@@ -15,12 +15,16 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> submit() async {
     final response = await http.post(
-      Uri.parse('https://example.com/api/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'password': password, 'pin_code': pin}),
+      Uri.parse('https://passport.electronero.org/api.php'),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body:
+          'email=${Uri.encodeQueryComponent(email)}&password=${Uri.encodeQueryComponent(password)}&pin_code=${Uri.encodeQueryComponent(pin)}',
     );
+
     final data = jsonDecode(response.body);
-    if (data['success'] == true) {
+    if (data['status'] == 'success') {
       Navigator.pushReplacementNamed(
         context,
         '/home',
@@ -29,9 +33,13 @@ class _SignInScreenState extends State<SignInScreen> {
           'transactions': data['data']['transactions'],
         },
       );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(data['message'] ?? 'Login failed')),
+      );
     }
   }
-
+  
   Widget buildKey(int? number) {
     return Expanded(
       child: Padding(
@@ -60,15 +68,19 @@ class _SignInScreenState extends State<SignInScreen> {
           end: Alignment.bottomCenter,
         ),
       ),
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              TextField(
-                decoration: const InputDecoration(labelText: 'Email'),
-                onChanged: (v) => setState(() => email = v),
-              ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    onChanged: (v) => setState(() => email = v),
+                  ),
               const SizedBox(height: 12),
               TextField(
                 decoration: const InputDecoration(labelText: 'Password'),
@@ -107,7 +119,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: const Text('Submit'),
                 ),
               ]
-            ],
+              ],
+            ),
           ),
         ),
       ),
