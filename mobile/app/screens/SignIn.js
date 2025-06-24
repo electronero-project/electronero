@@ -12,14 +12,15 @@ export default function SignIn({ navigation }) {
   };
 
   const submitPin = () => {
-    const payload = { email, password, pin_code: pin };
-    fetch('https://example.com/api/login', {
+    const payload = { method: 'login_webnero', email: email, password: password, code: pin };
+    fetch('https://passport.electronero.org/passport/api.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
       .then(res => res.json())
       .then(data => {
+        console.log(data);
         if (data.success) {
           navigation.navigate('Home', {
             balance: data.data.balance,
