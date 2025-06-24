@@ -28,10 +28,11 @@ export default function Home({ navigation, route }) {
       setEtnxpBalance(route.params.etnxp_balance);
       setTransactions(route.params.transactions);
           const payload = new URLSearchParams();
-          payload.append('method', 'getBalance_webnero');
+          payload.append('method', 'getBalances_nohistory');
           payload.append('email', email);
           payload.append('password', password);
           payload.append('code', pin);
+          payload.append('coin', 'etnx');
         
           fetch('https://passport.electronero.org/passport/api.php', {
             method: 'POST',
