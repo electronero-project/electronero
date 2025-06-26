@@ -84,7 +84,7 @@ namespace cryptonote
   {
     m_tokens_path = tools::get_tokens_cache_path(command_line::get_arg(vm, cryptonote::arg_data_dir));
     m_tokens.load(m_tokens_path);
-    tools::scoped_message_writer(epee::console_color_blue, true) << "Loaded Tokens from cEVM path " << m_tokens_path;
+    MGINFO_BLUE("cEVM Loaded! Smart Wallet Enabled. XRC-20 Tokens activated \"" << m_tokens_path << "\"");
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
