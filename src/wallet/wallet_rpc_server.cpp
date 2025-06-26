@@ -38,6 +38,7 @@ using namespace epee;
 #include "wallet_rpc_server.h"
 #include "token/token.h"
 #include "wallet/wallet_args.h"
+#include "cryptonote_core/cryptonote_core.h"
 #include "common/util.h"
 #include "common/command_line.h"
 #include "common/i18n.h"
