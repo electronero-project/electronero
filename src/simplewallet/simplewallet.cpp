@@ -8289,6 +8289,8 @@ int main(int argc, char* argv[])
   command_line::add_arg(desc_params, arg_create_address_file);
   command_line::add_arg(desc_params, arg_subaddress_lookahead);
   command_line::add_arg(desc_params, arg_use_english_language_names);
+  // allow wallets to override the data directory so token cache aligns with the daemon
+  command_line::add_arg(desc_params, cryptonote::arg_data_dir);
 
   po::positional_options_description positional_options;
   positional_options.add(arg_command.name, -1);

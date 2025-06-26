@@ -3537,6 +3537,8 @@ int main(int argc, char** argv) {
   command_line::add_arg(desc_params, arg_disable_rpc_login);
   command_line::add_arg(desc_params, arg_trusted_daemon);
   cryptonote::rpc_args::init_options(desc_params);
+  // expose daemon data directory for token cache when running wallet RPC solo
+  command_line::add_arg(desc_params, cryptonote::arg_data_dir);
   command_line::add_arg(desc_params, arg_wallet_file);
   command_line::add_arg(desc_params, arg_from_json);
   command_line::add_arg(desc_params, arg_wallet_dir);
