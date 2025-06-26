@@ -41,7 +41,6 @@
 #include <ctime>
 #include <boost/filesystem.hpp>
 #include "common/util.h"
-#include "common/scoped_message_writer.h"
 
 #include "cryptonote_basic/cryptonote_format_utils.h"
 #include "cryptonote_core/blockchain.h"
