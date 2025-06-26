@@ -76,13 +76,13 @@ namespace cryptonote
     {
       m_p2p = &m_p2p_stub;
     }
-    m_tokens_path = tools::get_tokens_cache_path(m_core.get_config_folder());
-    m_tokens.load(m_tokens_path);
   }
   //-----------------------------------------------------------------------------------------------------------------------
   template<class t_core>
   bool t_cryptonote_protocol_handler<t_core>::init(const boost::program_options::variables_map& vm)
   {
+    m_tokens_path = tools::get_tokens_cache_path(command_line::get_arg(vm, cryptonote::arg_data_dir));
+    m_tokens.load(m_tokens_path);
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
