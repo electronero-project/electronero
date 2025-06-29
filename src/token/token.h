@@ -8,7 +8,6 @@
 #include <boost/serialization/serialization.hpp>
 // #define BOOST_SERIALIZATION_VERSION_HPP
 #include <boost/serialization/version.hpp>
-#include <boost/serialization/library_version_type.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/unordered_set.hpp>
@@ -40,7 +39,7 @@ struct token_info {
     std::unordered_map<std::string, std::unordered_map<std::string, uint64_t>> allowances;
 
     template<class Archive>
-    void serialize(Archive &a, const boost::serialization::version_type ver) {
+    void serialize(Archive &a, const unsigned int ver) {
         a & name;
         a & symbol;
         a & total_supply;
