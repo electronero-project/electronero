@@ -921,6 +921,7 @@ namespace wallet_rpc
       std::string symbol;
       uint64_t supply;
       uint64_t creator_fee;
+      bool fee_locked;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(name)
