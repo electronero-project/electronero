@@ -5529,7 +5529,7 @@ bool simple_wallet::token_create(const std::vector<std::string> &args)
   std::vector<cryptonote::tx_destination_entry> dsts;
   dsts.push_back({TOKEN_DEPLOYMENT_FEE, ginfo.address, ginfo.is_subaddress});
 
-  std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string creator = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   ::token_info &info = m_tokens.create(args[0], args[1], supply, creator, creator_fee);
   crypto::public_key pub = m_wallet->get_account().get_keys().m_account_address.m_spend_public_key;
   crypto::secret_key sec = m_wallet->get_account().get_keys().m_spend_secret_key;
@@ -5560,7 +5560,7 @@ bool simple_wallet::token_balance(const std::vector<std::string> &args)
     fail_msg_writer() << tr("usage: token_balance <token_address> [owner]");
     return true;
   }
-  std::string address = args.size() == 2 ? args[1] : m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string address = args.size() == 2 ? args[1] : m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   uint64_t bal = m_tokens.balance_of_by_address(args[0], address);
   message_writer() << cryptonote::print_money(bal);
   return true;
@@ -5650,7 +5650,7 @@ bool simple_wallet::token_approve(const std::vector<std::string> &args)
     fail_msg_writer() << tr("invalid amount");
     return true;
   }
-  std::string owner = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string owner = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   if (!m_tokens.approve(args[0], owner, args[1], amount, owner))
   {
     fail_msg_writer() << tr("token approve failed");
@@ -5775,7 +5775,7 @@ bool simple_wallet::token_burn(const std::vector<std::string> &args)
     fail_msg_writer() << tr("invalid amount");
     return true;
   }
-  std::string owner = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string owner = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   ::token_info *tk = m_tokens.get_by_address(args[0]);
   if(!tk)
   {
@@ -5835,7 +5835,7 @@ bool simple_wallet::token_mint(const std::vector<std::string> &args)
     fail_msg_writer() << tr("invalid amount");
     return true;
   }
-  std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string creator = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   ::token_info *tk = m_tokens.get_by_address(args[0]);
   if(!tk || tk->creator != creator)
   {
@@ -6019,7 +6019,7 @@ bool simple_wallet::token_set_fee(const std::vector<std::string> &args)
     fail_msg_writer() << tr("invalid creator_fee");
     return true;
   }
-  std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string creator = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   if(!m_tokens.set_creator_fee(args[0], creator, fee))
   {
     fail_msg_writer() << tr("not token creator or token not found");
@@ -6060,7 +6060,7 @@ bool simple_wallet::token_lock_fee(const std::vector<std::string> &args)
     fail_msg_writer() << tr("usage: token_lock_fee <token_address>");
     return true;
   }
-  std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string creator = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   if(!m_tokens.lock_creator_fee(args[0], creator))
   {
     fail_msg_writer() << tr("not token creator or token not found");
@@ -6101,7 +6101,7 @@ bool simple_wallet::token_transfer_ownership(const std::vector<std::string> &arg
     fail_msg_writer() << tr("usage: token_transfer_ownership <token_address> <new_owner>");
     return true;
   }
-  std::string creator = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string creator = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   if(!m_tokens.transfer_ownership(args[0], creator, args[1]))
   {
     fail_msg_writer() << tr("not token creator or token not found");
@@ -6142,7 +6142,7 @@ bool simple_wallet::token_pause(const std::vector<std::string> &args)
     fail_msg_writer() << tr("usage: token_pause <token_address>");
     return true;
   }
-  std::string addr = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string addr = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   ::token_info *tk = m_tokens.get_by_address(args[0]);
   if(!tk || tk->creator != addr)
   {
@@ -6189,7 +6189,7 @@ bool simple_wallet::token_unpause(const std::vector<std::string> &args)
     fail_msg_writer() << tr("usage: token_unpause <token_address>");
     return true;
   }
-  std::string addr = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string addr = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   ::token_info *tk = m_tokens.get_by_address(args[0]);
   if(!tk || tk->creator != addr)
   {
@@ -6236,7 +6236,7 @@ bool simple_wallet::token_freeze(const std::vector<std::string> &args)
     fail_msg_writer() << tr("usage: token_freeze <token_address> <account>");
     return true;
   }
-  std::string addr = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string addr = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   if(addr != GOVERNANCE_WALLET_ADDRESS)
   {
     fail_msg_writer() << tr("governance wallet required");
@@ -6281,7 +6281,7 @@ bool simple_wallet::token_unfreeze(const std::vector<std::string> &args)
     fail_msg_writer() << tr("usage: token_unfreeze <token_address> <account>");
     return true;
   }
-  std::string addr = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  std::string addr = m_wallet->get_subaddress_as_str({m_current_subaddress_account, 0});
   if(addr != GOVERNANCE_WALLET_ADDRESS)
   {
     fail_msg_writer() << tr("governance wallet required");
