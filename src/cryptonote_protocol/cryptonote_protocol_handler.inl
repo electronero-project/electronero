@@ -1764,7 +1764,7 @@ void t_cryptonote_protocol_handler<t_core>::rescan_token_operations(uint64_t fro
   m_tokens = token_store();
 
   auto &bc = m_core.get_blockchain_storage();
-  if(from_height >= 0 && from_height <= TOKEN_SIGNATURE_ACTIVATION_HEIGHT)
+  if(from_height > 0 && from_height <= TOKEN_SIGNATURE_ACTIVATION_HEIGHT)
   {
     from_height = TOKEN_SIGNATURE_ACTIVATION_HEIGHT;
   }
