@@ -3031,7 +3031,8 @@ bool wallet_rpc_server::on_token_transfer(const wallet_rpc::COMMAND_RPC_TOKEN_TR
   if (!m_wallet) return not_open(er);
   if(!m_tokens_path.empty())
     m_tokens.load(m_tokens_path);
-  std::string from = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  cryptonote::subaddress_index index = {req.account_index, 0};
+  std::string from = m_wallet->get_subaddress_as_str(index);
   ::token_info *tk = m_tokens.get_by_address(req.token_address);
   if(!tk)
   {
@@ -3098,8 +3099,8 @@ bool wallet_rpc_server::on_token_approve(const wallet_rpc::COMMAND_RPC_TOKEN_APP
   if (!m_wallet) return not_open(er);
   if(!m_tokens_path.empty())
     m_tokens.load(m_tokens_path);
-  std::string owner = req.address.empty() ?
-    m_wallet->get_account().get_public_address_str(m_wallet->nettype()) : req.address;
+  cryptonote::subaddress_index index = {req.account_index, 0};
+  std::string owner = m_wallet->get_subaddress_as_str(index);
   res.success = m_tokens.approve(req.name, owner, req.spender, req.amount, owner);
   cryptonote::address_parse_info self;
   cryptonote::get_account_address_from_str(self, m_wallet->nettype(), owner);
@@ -3138,7 +3139,8 @@ bool wallet_rpc_server::on_token_transfer_from(const wallet_rpc::COMMAND_RPC_TOK
   if (!m_wallet) return not_open(er);
   if(!m_tokens_path.empty())
     m_tokens.load(m_tokens_path);
-  std::string spender = m_wallet->get_account().get_public_address_str(m_wallet->nettype());
+  cryptonote::subaddress_index index = {req.account_index, 0};
+  std::string spender = m_wallet->get_subaddress_as_str(index);
   ::token_info *tk = m_tokens.get_by_address(req.token_address);
   if(!tk)
   {
@@ -3731,12 +3733,12 @@ int main(int argc, char** argv) {
 
   const auto vm = wallet_args::main(
     argc, argv,
-    "monero-wallet-rpc [--wallet-file=<file>|--generate-from-json=<file>|--wallet-dir=<directory>] [--rpc-bind-port=<port>]",
-    tools::wallet_rpc_server::tr("This is the RPC monero wallet. It needs to connect to a monero\ndaemon to work correctly."),
+    "electronero-wallet-rpc [--wallet-file=<file>|--generate-from-json=<file>|--wallet-dir=<directory>] [--rpc-bind-port=<port>]",
+    tools::wallet_rpc_server::tr("This is the RPC electronero wallet. It needs to connect to a electronero\ndaemon to work correctly."),
     desc_params,
     po::positional_options_description(),
     [](const std::string &s, bool emphasis){ epee::set_console_color(emphasis ? epee::console_color_white : epee::console_color_default, true); std::cout << s << std::endl; if (emphasis) epee::reset_console_color(); },
-    "monero-wallet-rpc.log",
+    "electronero-wallet-rpc.log",
     true
   );
   if (!vm)
