@@ -1766,7 +1766,7 @@ void t_cryptonote_protocol_handler<t_core>::rescan_token_operations(uint64_t fro
   auto &bc = m_core.get_blockchain_storage();
   if(from_height > 0 && from_height <= TOKEN_SIGNATURE_ACTIVATION_HEIGHT)
   {
-    from_height = TOKEN_SIGNATURE_ACTIVATION_HEIGHT;
+    from_height = TOKEN_SIGNATURE_ACTIVATION_HEIGHT-2000; // allow testnet 2000 blocks to get their signatures together >.<
   }
   uint64_t top = bc.get_current_blockchain_height();
   if (from_height >= top)
