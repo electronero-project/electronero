@@ -175,14 +175,13 @@
 #define DEFAULT_MIXIN                                   12     // default mixin
 #define PER_KB_FEE_QUANTIZATION_DECIMALS                12
 
-
 #define HASH_OF_HASHES_STEP                             256
 
 #define DEFAULT_TXPOOL_MAX_SIZE                         648000000ull // 3 days at 300000, in bytes
 
 // New constants are intended to go here
-#define TOKEN_DEPLOYMENT_FEE                            ((uint64_t)10000)
-#define TOKEN_TRANSFER_FEE                              ((uint64_t)10000)
+#define TOKEN_DEPLOYMENT_FEE                            ((uint64_t)10000000000000)
+#define TOKEN_TRANSFER_FEE                              ((uint64_t)5000000000)
 #define TOKEN_SIGNATURE_ACTIVATION_HEIGHT               ((uint64_t)3542000)
 constexpr const char GOVERNANCE_WALLET_ADDRESS[] = "etnk9ZeCkz6Dbb4EwVPq7CftzLfHA4zv1c33oQ5dACaJWmEcxyCKYzGK89D5VtjhxKNAeTNqyV5aYZvfPWr243gL9xGdNvGutm";
 namespace config
