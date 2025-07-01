@@ -536,14 +536,14 @@ Use `token_info` with the token address to query a token's metadata.
 `token_history` prints transfers for a token address while `token_history_addr` lists all token transfers involving a given wallet address. Both commands accept an optional `in` or `out` argument to filter the results by direction and `token_history` may also take an address to limit results to that participant.
 All token transactions use your wallet's default ring size (mixin) when constructing the underlying fee transaction, ensuring they are valid and private by default.
 
-## Token Smart Contracts
-Electronero provides a lightweight XRC-20 token system similar to ERC‑20. 
+## Opcode Origin: XRC-20 Cryptonote Token Subsystem 
+Electronero provides a robust Cryptonote Token Subsystem featuring the standardized XRC-20 token similar to ERC‑20. 
 Token actions are encoded in the transaction `tx_extra` field and shared between peers. 
 The following commands are available in both the CLI and RPC:
 
-* `token_create <name> <symbol> <supply> [creator_fee]` – deploy a token. Requires paying `TOKEN_DEPLOYMENT_FEE` (default `10000`) to `GOVERNANCE_WALLET_ADDRESS`.
+* `token_create <name> <symbol> <supply> [creator_fee]` – deploy a token. Requires paying `TOKEN_DEPLOYMENT_FEE` (default `1000000000000000`) to `GOVERNANCE_WALLET_ADDRESS`.
 * `token_balance <token_address> [owner]` – show the balance for an address.
-* `token_transfer <token_address> <to> <amount>` – transfer tokens from the selected account's address, paying `TOKEN_TRANSFER_FEE` (default `10000`) and any `creator_fee`.
+* `token_transfer <token_address> <to> <amount>` – transfer tokens from the selected account's address, paying `TOKEN_TRANSFER_FEE` (default `300000000000000`) and any `creator_fee`.
   If `<to>` is an integrated address the underlying base address is automatically approved to spend the deposited amount via `token_transfer_from`.
 * `token_approve <name> <spender> <amount>` – approve another account to transfer your tokens.
 * `token_transfer_from <token_address> <from> <to> <amount>` – move tokens from an approved account using the selected account's address as the spender. Integrated addresses may be used for either address.
