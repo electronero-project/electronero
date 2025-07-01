@@ -12,16 +12,18 @@ xAssets (airdrops & swaps): xETNX / xETNXP / xLTNX / xGLDX / xCRFI / xXMR / xETN
 
 Source code forked from Monero, Blockchain forked from Electroneum. Many security updates and unique features have been added over the years. 
 
-`Copyright (c) 2014-2018 The Monero Project.
+```
+Copyright (c) 2014-2018 The Monero Project.
 Portions Copyright (c) 2012-2013 The Cryptonote developers.
 Portions Copyright (c) 2017-2018 The Electroneum developers.  
 Portions Copyright (c) ~2018 The Masari developers.
 Portions Copyright (c) ~2018 The Sumokoin developers.
 Portions Copyright (c) ~2018 The Stellite developers.
-Portions Copyright (c) 2014-2018 The Electronero Project.  
-Portions Copyright (c) 2014-2018 The Electronero Pulse Project.  
-Portions Copyright (c) 2014-2018 The Litenero Project.  
-Portions Copyright (c) 2014-2018 The Goldnero Project.`
+Portions Copyright (c) 2014-2025 The Electronero Project.  
+Portions Copyright (c) 2014-2025 The Electronero Pulse Project.  
+Portions Copyright (c) 2014-2024 The Litenero Project.  
+Portions Copyright (c) 2014-2024 The Goldnero Project.
+```
 
 ## Table of Contents
 
