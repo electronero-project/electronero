@@ -792,14 +792,10 @@ bool add_extra_nonce_to_tx_extra(std::vector<uint8_t>& tx_extra, const blobdata&
       decimal_point = default_decimal_point;
     switch (std::atomic_load(&default_decimal_point))
     {
-      case 12:
-        return "electronero";
-      case 11:
-        return "virbovonero";
       case 10:
-        return "portenero";
+        return "electronero";
       case 9:
-        return "millinero";
+        return "virbovonero";
       case 8:
         return "fortonero";
       case 7:
