@@ -72,7 +72,7 @@
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1    20000 //size of block (bytes) after which reward for block calculated using block size - before first fork
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5    300000 //size of block (bytes) after which reward for block calculated using block size - second change, from v5
 #define CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE          600
-#define CRYPTONOTE_DISPLAY_DECIMAL_POINT                12
+#define CRYPTONOTE_DISPLAY_DECIMAL_POINT                10
 
 #define CRYPTONOTE_TX_FEE_RESERVED_SIZE                 3
 #define CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5             21
@@ -173,7 +173,7 @@
 #define MIN_MIXIN                                       1      // minimum mixin allowed
 #define MAX_MIXIN                                       100    // maximum mixin allowed
 #define DEFAULT_MIXIN                                   12     // default mixin
-#define PER_KB_FEE_QUANTIZATION_DECIMALS                12
+#define PER_KB_FEE_QUANTIZATION_DECIMALS                10
 
 #define HASH_OF_HASHES_STEP                             256
 
