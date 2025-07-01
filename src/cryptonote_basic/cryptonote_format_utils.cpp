@@ -806,6 +806,14 @@ bool add_extra_nonce_to_tx_extra(std::vector<uint8_t>& tx_extra, const blobdata&
         return "macronero";
       case 6:
         return "micronero";
+      case 5:
+        return "fillinero";
+      case 4:
+        return "quadronero";
+      case 3:
+        return "tresnero";
+      case 2:
+        return "dosnero";
       case 0:
         return "piconero";
       default:
