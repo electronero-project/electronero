@@ -61,10 +61,10 @@
 #define ELECTRONERO_SWAP                                ((uint64_t)(6760312199110301990)) 
 
 // Number of smallest units in one coin
-#define COIN                                            ((uint64_t)1000000000000) // pow(10, 12)
+#define COIN                                            ((uint64_t)10000000000) // pow(10, 10)
 
 #define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)
-#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)1000000000000) // 1 coin
+#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)10000000000) // 1 coin
 
 #define CRYPTONOTE_REWARD_BLOCKS_WINDOW                 100
  
@@ -79,10 +79,10 @@
 
 #define FEE_PER_KB_OLD                                  ((uint64_t)3000000) // .1 * pow(10, 1)
 #define FEE_PER_KB_V2                                   ((uint64_t)3000000) // .4 * pow(10, 1)
-#define FEE_PER_KB                                      ((uint64_t)2500000000) // 0.0025
-#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)2500000000) // .0025 * pow(10, 12)
-#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)2500000000) // .0025 * pow(10, 12)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)2500000000 * (uint64_t)CRYPTONOTE_TX_FEE_RESERVED_SIZE / CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5)
+#define FEE_PER_KB                                      ((uint64_t)250000000) // 0.0025
+#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)250000000) // .0025 * pow(10, 12)
+#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)250000000) // .0025 * pow(10, 12)
+#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)250000000 * (uint64_t)CRYPTONOTE_TX_FEE_RESERVED_SIZE / CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5)
 
 #define ORPHANED_BLOCKS_MAX_COUNT                       100
 
