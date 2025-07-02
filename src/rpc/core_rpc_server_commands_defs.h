@@ -1933,6 +1933,26 @@ namespace cryptonote
     };
   };
 
+  struct COMMAND_RPC_RESCAN_TOKEN_TX
+  {
+    struct request
+    {
+      uint64_t from_height = 0;
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(from_height)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::string status;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(status)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
   struct COMMAND_RPC_GET_OUTPUT_HISTOGRAM
   {
     struct request

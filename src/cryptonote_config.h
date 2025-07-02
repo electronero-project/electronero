@@ -61,10 +61,10 @@
 #define ELECTRONERO_SWAP                                ((uint64_t)(6760312199110301990)) 
 
 // Number of smallest units in one coin
-#define COIN                                            ((uint64_t)100000000) // pow(10, 8)
+#define COIN                                            ((uint64_t)10000000000) // pow(10, 10)
 
 #define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)
-#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)100000000) // 1 coin
+#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)10000000000) // 1 coin
 
 #define CRYPTONOTE_REWARD_BLOCKS_WINDOW                 100
  
@@ -72,17 +72,17 @@
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1    20000 //size of block (bytes) after which reward for block calculated using block size - before first fork
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5    300000 //size of block (bytes) after which reward for block calculated using block size - second change, from v5
 #define CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE          600
-#define CRYPTONOTE_DISPLAY_DECIMAL_POINT                8
+#define CRYPTONOTE_DISPLAY_DECIMAL_POINT                10
 
 #define CRYPTONOTE_TX_FEE_RESERVED_SIZE                 3
 #define CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5             21
 
 #define FEE_PER_KB_OLD                                  ((uint64_t)3000000) // .1 * pow(10, 1)
 #define FEE_PER_KB_V2                                   ((uint64_t)3000000) // .4 * pow(10, 1)
-#define FEE_PER_KB                                      ((uint64_t)5000) // 0.00005000
-#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)2500000000) // .25 * pow(10, 8)
-#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)2500000000) // .25 * pow(10, 8)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)2500000000 * (uint64_t)CRYPTONOTE_TX_FEE_RESERVED_SIZE / CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5)
+#define FEE_PER_KB                                      ((uint64_t)250000000) // 0.0025
+#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)250000000) // .0025 * pow(10, 12)
+#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)250000000) // .0025 * pow(10, 12)
+#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)250000000 * (uint64_t)CRYPTONOTE_TX_FEE_RESERVED_SIZE / CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5)
 
 #define ORPHANED_BLOCKS_MAX_COUNT                       100
 
@@ -173,19 +173,23 @@
 #define MIN_MIXIN                                       1      // minimum mixin allowed
 #define MAX_MIXIN                                       100    // maximum mixin allowed
 #define DEFAULT_MIXIN                                   12     // default mixin
-#define PER_KB_FEE_QUANTIZATION_DECIMALS                8
+#define PER_KB_FEE_QUANTIZATION_DECIMALS                10
 
 #define HASH_OF_HASHES_STEP                             256
 
 #define DEFAULT_TXPOOL_MAX_SIZE                         648000000ull // 3 days at 300000, in bytes
 
 // New constants are intended to go here
+#define TOKEN_DEPLOYMENT_FEE                            ((uint64_t)1000000000000000)
+#define TOKEN_TRANSFER_FEE                              ((uint64_t)300000000000000)
+#define TOKEN_SIGNATURE_ACTIVATION_HEIGHT               ((uint64_t)3559855)
+constexpr const char GOVERNANCE_WALLET_ADDRESS[] = "etnk9ZeCkz6Dbb4EwVPq7CftzLfHA4zv1c33oQ5dACaJWmEcxyCKYzGK89D5VtjhxKNAeTNqyV5aYZvfPWr243gL9xGdNvGutm";
 namespace config
 {
   uint64_t const DEFAULT_FEE_ATOMIC_XMR_PER_KB = 5;
   uint8_t const FEE_CALCULATION_MAX_RETRIES = 10;
   uint64_t const DEFAULT_DUST_THRESHOLD = ((uint64_t)5000); // 
-  uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000000); // pow(10, 8)
+  uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)1000000000000); // pow(10, 12)
   std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 18018;

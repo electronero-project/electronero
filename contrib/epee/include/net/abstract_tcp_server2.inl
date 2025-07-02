@@ -46,7 +46,8 @@
 #include "misc_language.h"
 #include "net/local_ip.h"
 #include "pragma_comp_defs.h"
-
+#include <boost/bind/placeholders.hpp>
+using namespace boost::placeholders;
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
@@ -215,7 +216,7 @@ PRAGMA_WARNING_DISABLE_VS(4355)
   template<class t_protocol_handler>
   boost::asio::io_service& connection<t_protocol_handler>::get_io_service()
   {
-    return socket_.get_io_service();
+    return static_cast<boost::asio::io_context&>(socket_.get_executor().context());
   }
   //---------------------------------------------------------------------------------
   template<class t_protocol_handler>
@@ -383,7 +384,8 @@ PRAGMA_WARNING_DISABLE_VS(4355)
     if(!m_is_multithreaded)
     {
       //single thread model, we can wait in blocked call
-      size_t cnt = socket_.get_io_service().run_one();
+      auto& io_ctx = static_cast<boost::asio::io_context&>(socket_.get_executor().context());
+      size_t cnt = io_ctx.poll();
       if(!cnt)//service is going to quit
         return false;
     }else
@@ -393,7 +395,8 @@ PRAGMA_WARNING_DISABLE_VS(4355)
       //if no handlers were called
       //TODO: Maybe we need to have have critical section + event + callback to upper protocol to
       //ask it inside(!) critical region if we still able to go in event wait...
-      size_t cnt = socket_.get_io_service().poll_one();     
+      auto& io_ctx = static_cast<boost::asio::io_context&>(socket_.get_executor().context());
+      size_t cnt = io_ctx.poll();     
       if(!cnt)
         misc_utils::sleep_no_w(0);
     }
@@ -649,17 +652,25 @@ PRAGMA_WARNING_DISABLE_VS(4355)
   template<class t_protocol_handler>
   bool connection<t_protocol_handler>::shutdown()
   {
-    // Initiate graceful connection closure.
+    if (m_shutdown_in_progress.exchange(true))
+      return false; // Already being or already shut down
+
+    m_was_shutdown = true;
     m_timer.cancel();
+
     boost::system::error_code ignored_ec;
     socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
-    m_was_shutdown = true;
+
     m_protocol_handler.release_protocol();
-    if (!m_host.empty())
-    {
-      try { host_count(m_host, -1); } catch (...) { /* ignore */ }
-      m_host = "";
-    }
+
+    try {
+      if (!m_host.empty()) {
+        host_count(m_host, -1);
+      }
+    } catch (...) { /* ignore */ }
+
+    m_host.clear(); // now safe
+
     return true;
   }
   //---------------------------------------------------------------------------------

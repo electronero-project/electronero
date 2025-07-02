@@ -37,6 +37,7 @@
 #include "net/http_server_impl_base.h"
 #include "wallet_rpc_server_commands_defs.h"
 #include "wallet2.h"
+#include "token/token.h"
 
 #undef MONERO_DEFAULT_LOG_CATEGORY
 #define MONERO_DEFAULT_LOG_CATEGORY "wallet.rpc"
@@ -122,6 +123,7 @@ namespace tools
         MAP_JON_RPC_WE("add_address_book",   on_add_address_book,   wallet_rpc::COMMAND_RPC_ADD_ADDRESS_BOOK_ENTRY)
         MAP_JON_RPC_WE("delete_address_book",on_delete_address_book,wallet_rpc::COMMAND_RPC_DELETE_ADDRESS_BOOK_ENTRY)
         MAP_JON_RPC_WE("rescan_spent",       on_rescan_spent,       wallet_rpc::COMMAND_RPC_RESCAN_SPENT)
+        MAP_JON_RPC_WE("rescan_token_tx",    on_rescan_token_tx,    wallet_rpc::COMMAND_RPC_RESCAN_TOKEN_TX)
         MAP_JON_RPC_WE("start_mining",       on_start_mining,       wallet_rpc::COMMAND_RPC_START_MINING)
         MAP_JON_RPC_WE("stop_mining",        on_stop_mining,        wallet_rpc::COMMAND_RPC_STOP_MINING)
         MAP_JON_RPC_WE("get_languages",      on_get_languages,      wallet_rpc::COMMAND_RPC_GET_LANGUAGES)
@@ -135,6 +137,25 @@ namespace tools
         MAP_JON_RPC_WE("finalize_multisig",  on_finalize_multisig,  wallet_rpc::COMMAND_RPC_FINALIZE_MULTISIG)
         MAP_JON_RPC_WE("sign_multisig",      on_sign_multisig,      wallet_rpc::COMMAND_RPC_SIGN_MULTISIG)
         MAP_JON_RPC_WE("submit_multisig",    on_submit_multisig,    wallet_rpc::COMMAND_RPC_SUBMIT_MULTISIG)
+        MAP_JON_RPC_WE("token_create",       on_token_create,       wallet_rpc::COMMAND_RPC_TOKEN_CREATE)
+        MAP_JON_RPC_WE("token_balance",      on_token_balance,      wallet_rpc::COMMAND_RPC_TOKEN_BALANCE)
+        MAP_JON_RPC_WE("token_transfer",     on_token_transfer,     wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER)
+        MAP_JON_RPC_WE("token_approve",      on_token_approve,      wallet_rpc::COMMAND_RPC_TOKEN_APPROVE)
+        MAP_JON_RPC_WE("token_transfer_from",on_token_transfer_from,wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER_FROM)
+        MAP_JON_RPC_WE("token_allowance",   on_token_allowance,   wallet_rpc::COMMAND_RPC_TOKEN_ALLOWANCE)
+        MAP_JON_RPC_WE("token_burn",        on_token_burn,        wallet_rpc::COMMAND_RPC_TOKEN_BURN)
+        MAP_JON_RPC_WE("token_mint",        on_token_mint,        wallet_rpc::COMMAND_RPC_TOKEN_MINT)
+        MAP_JON_RPC_WE("token_info",        on_token_info,        wallet_rpc::COMMAND_RPC_TOKEN_INFO)
+        MAP_JON_RPC_WE("all_tokens",        on_all_tokens,        wallet_rpc::COMMAND_RPC_TOKEN_ALL)
+        MAP_JON_RPC_WE("tokens_deployed",   on_tokens_deployed,   wallet_rpc::COMMAND_RPC_TOKENS_DEPLOYED)
+        MAP_JON_RPC_WE("my_tokens",         on_my_tokens,         wallet_rpc::COMMAND_RPC_MY_TOKENS)
+        MAP_JON_RPC_WE("token_history",     on_token_history,     wallet_rpc::COMMAND_RPC_TOKEN_HISTORY)
+        MAP_JON_RPC_WE("token_history_addr",on_token_history_addr,wallet_rpc::COMMAND_RPC_TOKEN_HISTORY_ADDR)
+        MAP_JON_RPC_WE("token_set_fee",     on_token_set_fee,     wallet_rpc::COMMAND_RPC_TOKEN_SET_FEE)
+        MAP_JON_RPC_WE("token_lock_fee",    on_token_lock_fee,    wallet_rpc::COMMAND_RPC_TOKEN_LOCK_FEE)
+        MAP_JON_RPC_WE("token_transfer_ownership", on_token_transfer_ownership, wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER_OWNERSHIP)
+        MAP_JON_RPC_WE("token_pause", on_token_pause, wallet_rpc::COMMAND_RPC_TOKEN_PAUSE)
+        MAP_JON_RPC_WE("token_freeze", on_token_freeze, wallet_rpc::COMMAND_RPC_TOKEN_FREEZE)
       END_JSON_RPC_MAP()
     END_URI_MAP2()
 
@@ -190,6 +211,7 @@ namespace tools
       bool on_add_address_book(const wallet_rpc::COMMAND_RPC_ADD_ADDRESS_BOOK_ENTRY::request& req, wallet_rpc::COMMAND_RPC_ADD_ADDRESS_BOOK_ENTRY::response& res, epee::json_rpc::error& er);
       bool on_delete_address_book(const wallet_rpc::COMMAND_RPC_DELETE_ADDRESS_BOOK_ENTRY::request& req, wallet_rpc::COMMAND_RPC_DELETE_ADDRESS_BOOK_ENTRY::response& res, epee::json_rpc::error& er);
       bool on_rescan_spent(const wallet_rpc::COMMAND_RPC_RESCAN_SPENT::request& req, wallet_rpc::COMMAND_RPC_RESCAN_SPENT::response& res, epee::json_rpc::error& er);
+      bool on_rescan_token_tx(const wallet_rpc::COMMAND_RPC_RESCAN_TOKEN_TX::request& req, wallet_rpc::COMMAND_RPC_RESCAN_TOKEN_TX::response& res, epee::json_rpc::error& er);
       bool on_start_mining(const wallet_rpc::COMMAND_RPC_START_MINING::request& req, wallet_rpc::COMMAND_RPC_START_MINING::response& res, epee::json_rpc::error& er);
       bool on_stop_mining(const wallet_rpc::COMMAND_RPC_STOP_MINING::request& req, wallet_rpc::COMMAND_RPC_STOP_MINING::response& res, epee::json_rpc::error& er);
       bool on_get_languages(const wallet_rpc::COMMAND_RPC_GET_LANGUAGES::request& req, wallet_rpc::COMMAND_RPC_GET_LANGUAGES::response& res, epee::json_rpc::error& er);
@@ -203,6 +225,26 @@ namespace tools
       bool on_finalize_multisig(const wallet_rpc::COMMAND_RPC_FINALIZE_MULTISIG::request& req, wallet_rpc::COMMAND_RPC_FINALIZE_MULTISIG::response& res, epee::json_rpc::error& er);
       bool on_sign_multisig(const wallet_rpc::COMMAND_RPC_SIGN_MULTISIG::request& req, wallet_rpc::COMMAND_RPC_SIGN_MULTISIG::response& res, epee::json_rpc::error& er);
       bool on_submit_multisig(const wallet_rpc::COMMAND_RPC_SUBMIT_MULTISIG::request& req, wallet_rpc::COMMAND_RPC_SUBMIT_MULTISIG::response& res, epee::json_rpc::error& er);
+
+      bool on_token_create(const wallet_rpc::COMMAND_RPC_TOKEN_CREATE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_CREATE::response& res, epee::json_rpc::error& er);
+      bool on_token_balance(const wallet_rpc::COMMAND_RPC_TOKEN_BALANCE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_BALANCE::response& res, epee::json_rpc::error& er);
+      bool on_token_transfer(const wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER::request& req, wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER::response& res, epee::json_rpc::error& er);
+      bool on_token_approve(const wallet_rpc::COMMAND_RPC_TOKEN_APPROVE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_APPROVE::response& res, epee::json_rpc::error& er);
+      bool on_token_transfer_from(const wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER_FROM::request& req, wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER_FROM::response& res, epee::json_rpc::error& er);
+      bool on_token_allowance(const wallet_rpc::COMMAND_RPC_TOKEN_ALLOWANCE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_ALLOWANCE::response& res, epee::json_rpc::error& er);
+      bool on_token_burn(const wallet_rpc::COMMAND_RPC_TOKEN_BURN::request& req, wallet_rpc::COMMAND_RPC_TOKEN_BURN::response& res, epee::json_rpc::error& er);
+      bool on_token_mint(const wallet_rpc::COMMAND_RPC_TOKEN_MINT::request& req, wallet_rpc::COMMAND_RPC_TOKEN_MINT::response& res, epee::json_rpc::error& er);
+      bool on_token_info(const wallet_rpc::COMMAND_RPC_TOKEN_INFO::request& req, wallet_rpc::COMMAND_RPC_TOKEN_INFO::response& res, epee::json_rpc::error& er);
+      bool on_all_tokens(const wallet_rpc::COMMAND_RPC_TOKEN_ALL::request& req, wallet_rpc::COMMAND_RPC_TOKEN_ALL::response& res, epee::json_rpc::error& er);
+      bool on_tokens_deployed(const wallet_rpc::COMMAND_RPC_TOKENS_DEPLOYED::request& req, wallet_rpc::COMMAND_RPC_TOKENS_DEPLOYED::response& res, epee::json_rpc::error& er);
+      bool on_my_tokens(const wallet_rpc::COMMAND_RPC_MY_TOKENS::request& req, wallet_rpc::COMMAND_RPC_MY_TOKENS::response& res, epee::json_rpc::error& er);
+      bool on_token_history(const wallet_rpc::COMMAND_RPC_TOKEN_HISTORY::request& req, wallet_rpc::COMMAND_RPC_TOKEN_HISTORY::response& res, epee::json_rpc::error& er);
+      bool on_token_history_addr(const wallet_rpc::COMMAND_RPC_TOKEN_HISTORY_ADDR::request& req, wallet_rpc::COMMAND_RPC_TOKEN_HISTORY_ADDR::response& res, epee::json_rpc::error& er);
+      bool on_token_set_fee(const wallet_rpc::COMMAND_RPC_TOKEN_SET_FEE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_SET_FEE::response& res, epee::json_rpc::error& er);
+      bool on_token_lock_fee(const wallet_rpc::COMMAND_RPC_TOKEN_LOCK_FEE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_LOCK_FEE::response& res, epee::json_rpc::error& er);
+      bool on_token_transfer_ownership(const wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER_OWNERSHIP::request& req, wallet_rpc::COMMAND_RPC_TOKEN_TRANSFER_OWNERSHIP::response& res, epee::json_rpc::error& er);
+      bool on_token_pause(const wallet_rpc::COMMAND_RPC_TOKEN_PAUSE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_PAUSE::response& res, epee::json_rpc::error& er);
+      bool on_token_freeze(const wallet_rpc::COMMAND_RPC_TOKEN_FREEZE::request& req, wallet_rpc::COMMAND_RPC_TOKEN_FREEZE::response& res, epee::json_rpc::error& er);
 
       //json rpc v2
       bool on_query_key(const wallet_rpc::COMMAND_RPC_QUERY_KEY::request& req, wallet_rpc::COMMAND_RPC_QUERY_KEY::response& res, epee::json_rpc::error& er);
@@ -226,5 +268,7 @@ namespace tools
       std::atomic<bool> m_stop;
       bool m_trusted_daemon;
       const boost::program_options::variables_map *m_vm;
+      token_store m_tokens;
+      std::string m_tokens_path;
   };
 }

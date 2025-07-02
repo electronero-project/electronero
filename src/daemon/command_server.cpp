@@ -241,6 +241,12 @@ t_command_server::t_command_server(
     , "Flush a transaction from the tx pool by its <txid>, or the whole tx pool."
     );
     m_command_lookup.set_handler(
+      "rescan_token_tx"
+    , std::bind(&t_command_parser_executor::rescan_token_tx, &m_parser, p::_1)
+    , "rescan_token_tx [from_height]"
+    , "Rescan the blockchain for token operations starting from the given height."
+    );
+    m_command_lookup.set_handler(
       "output_histogram"
     , std::bind(&t_command_parser_executor::output_histogram, &m_parser, p::_1)
     , "output_histogram [@<amount>] <min_count> [<max_count>]"
@@ -281,9 +287,19 @@ t_command_server::t_command_server(
     , "Print information about the blockchain sync state."
     );
     m_command_lookup.set_handler(
+      "uptime"
+    , std::bind(&t_command_parser_executor::print_uptime, &m_parser, p::_1)
+    , "Show how long the daemon has been running."
+    );
+    m_command_lookup.set_handler(
       "version"
     , std::bind(&t_command_parser_executor::version, &m_parser, p::_1)
     , "Print version information."
+    );
+    m_command_lookup.set_handler(
+      "rpc_version"
+    , std::bind(&t_command_parser_executor::rpc_version, &m_parser, p::_1)
+    , "Query the daemon for its RPC version."
     );
 }
 

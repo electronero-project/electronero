@@ -31,15 +31,20 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
+// Parts of this file are originally copyright (c) 2018-2025 Electronero Network 
 
 // (may contain code and/or modifications by other developers)
 // developer rfree: this code is caller of our new network code, and is modded; e.g. for rate limiting
 
 #include <boost/interprocess/detail/atomic.hpp>
+#include <iostream>
 #include <list>
 #include <ctime>
+#include <boost/filesystem.hpp>
+#include "common/util.h"
 
 #include "cryptonote_basic/cryptonote_format_utils.h"
+#include "cryptonote_core/blockchain.h"
 #include "profile_tools.h"
 #include "net/network_throttle-detail.hpp"
 
@@ -69,18 +74,25 @@ namespace cryptonote
 
   {
     if(!m_p2p)
+    {
       m_p2p = &m_p2p_stub;
+    }
   }
   //-----------------------------------------------------------------------------------------------------------------------
   template<class t_core>
   bool t_cryptonote_protocol_handler<t_core>::init(const boost::program_options::variables_map& vm)
   {
+    m_tokens_path = tools::get_tokens_cache_path(command_line::get_arg(vm, cryptonote::arg_data_dir));
+    m_tokens.load(m_tokens_path);
+    MGINFO_BLUE("cEVM Loaded! Smart Wallet Enabled. XRC-20 Tokens activated \"" << m_tokens_path << "\"");
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
   template<class t_core>
   bool t_cryptonote_protocol_handler<t_core>::deinit()
   {
+    if(!m_tokens_path.empty())
+      m_tokens.save(m_tokens_path);
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
@@ -279,6 +291,10 @@ namespace cryptonote
       }
     }
 
+    // Token blob data used to be merged here but is now ignored. Tokens
+    // synchronize through transactions or a manual rescan instead of the
+    // handshake payload to keep memory usage low.
+
     context.m_remote_blockchain_height = hshd.current_height;
 
     uint64_t target = m_core.get_target_blockchain_height();
@@ -327,6 +343,7 @@ namespace cryptonote
     hshd.top_version = m_core.get_ideal_hard_fork_version(hshd.current_height);
     hshd.cumulative_difficulty = m_core.get_block_cumulative_difficulty(hshd.current_height);
     hshd.current_height +=1;
+    // Token state is no longer sent during the handshake.
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
@@ -1739,6 +1756,196 @@ skip:
     m_block_queue.flush_spans(context.m_connection_id, false);
   }
 
+//-----------------------------------------------------------------------------------
+template<class t_core>
+void t_cryptonote_protocol_handler<t_core>::rescan_token_operations(uint64_t from_height)
+{
+  // start with a clean store to avoid replaying operations twice
+  m_tokens = token_store();
+
+  auto &bc = m_core.get_blockchain_storage();
+  if(from_height > 0 && from_height <= TOKEN_SIGNATURE_ACTIVATION_HEIGHT)
+  {
+    from_height = TOKEN_SIGNATURE_ACTIVATION_HEIGHT-2000; // allow testnet 2000 blocks to get their signatures together >.<
+  }
+  uint64_t top = bc.get_current_blockchain_height();
+  if (from_height >= top)
+    return;
+  auto process_tx = [this](const cryptonote::transaction &tx, uint64_t h){
+    process_token_tx(tx, h);
+  };
+
+  uint64_t end = top - 1;
+  uint64_t total_blocks = end - from_height + 1;
+  uint64_t scanned_blocks = 0;
+  uint64_t scanned_txs = 0;
+  const uint64_t progress_interval = 1000;
+  bc.for_blocks_range(from_height, end, [this, &bc, &process_tx, &scanned_blocks, &scanned_txs, total_blocks, progress_interval](uint64_t height, const crypto::hash&, const cryptonote::block& b){
+    process_tx(b.miner_tx, height);
+    ++scanned_txs;
+    ++scanned_blocks;
+    std::list<cryptonote::transaction> txs;
+    std::list<crypto::hash> missed;
+    bc.get_transactions(b.tx_hashes, txs, missed);
+
+    auto get_op = [](const cryptonote::transaction &t, token_op_type &op) {
+      std::vector<cryptonote::tx_extra_field> fs;
+      if(!cryptonote::parse_tx_extra(t.extra, fs))
+        return false;
+      cryptonote::tx_extra_token_data td;
+      if(!find_tx_extra_field_by_type(fs, td))
+        return false;
+      std::vector<std::string> tmp;
+      crypto::signature sg;
+      bool hs;
+      if(!parse_token_extra(td.data, op, tmp, sg, hs))
+        return false;
+      return true;
+    };
+
+    // process creation ops first so later transfers in the same block succeed
+    for(const auto &tx : txs)
+    {
+      token_op_type op;
+      if(get_op(tx, op) && op == token_op_type::create)
+        process_tx(tx, height);
+    }
+    for(const auto &tx : txs)
+    {
+      token_op_type op;
+      if(!get_op(tx, op) || op != token_op_type::create)
+        process_tx(tx, height);
+    }
+
+    scanned_txs += txs.size();
+    if (scanned_blocks % progress_interval == 0 || scanned_blocks == total_blocks)
+    {
+      std::vector<token_info> list;
+      m_tokens.list_all(list);
+      std::cout << "\r" << scanned_blocks << "/" << total_blocks << " blocks scanned, "
+                << list.size() << " tokens found, " << scanned_txs << " transactions" << std::flush;
+    }
+    return true;
+  });
+  std::cout << std::endl;
+
+  if(!m_tokens_path.empty())
+    m_tokens.save(m_tokens_path);
+}
+
+//----------------------------------------------------------------------------------------------------
+template<class t_core>
+void t_cryptonote_protocol_handler<t_core>::process_token_tx(const cryptonote::transaction &tx, uint64_t height)
+{
+  std::vector<cryptonote::tx_extra_field> fields;
+  if(!cryptonote::parse_tx_extra(tx.extra, fields))
+    return;
+  cryptonote::tx_extra_token_data tdata;
+  if(!find_tx_extra_field_by_type(fields, tdata))
+    return;
+  token_op_type op;
+  std::vector<std::string> parts;
+  crypto::signature sig;
+  bool has_sig;
+  if(!parse_token_extra(tdata.data, op, parts, sig, has_sig))
+    return;
+  MDEBUG("Token op " << static_cast<int>(op));
+
+  std::string signer;
+  switch(op)
+  {
+    case token_op_type::create: if(parts.size() >= 5) signer = parts[4]; break;
+    case token_op_type::transfer: if(parts.size() == 4) signer = parts[1]; break;
+    case token_op_type::approve: if(parts.size() == 4) signer = parts[1]; break;
+    case token_op_type::transfer_from: if(parts.size() == 5) signer = parts[1]; break;
+    case token_op_type::set_fee: if(parts.size() == 3) signer = parts[1]; break;
+    case token_op_type::burn: if(parts.size() == 3) signer = parts[1]; break;
+    case token_op_type::mint: if(parts.size() == 3) signer = parts[1]; break;
+    case token_op_type::transfer_ownership: if(parts.size() == 3) signer = parts[1]; break;
+    case token_op_type::pause: if(parts.size() == 3) signer = parts[1]; break;
+    case token_op_type::freeze: if(parts.size() == 4) signer = parts[1]; break;
+    case token_op_type::lock_fee: if(parts.size() == 2) signer = parts[1]; break;
+  }
+  cryptonote::address_parse_info info;
+  if(signer.empty() || !cryptonote::get_account_address_from_str(info, m_core.get_nettype(), signer))
+    return;
+  bool require_sig = height >= TOKEN_SIGNATURE_ACTIVATION_HEIGHT;
+  if(op == token_op_type::freeze)
+  {
+    if(signer != GOVERNANCE_WALLET_ADDRESS)
+      return;
+    require_sig = true;
+  }
+  else if(op == token_op_type::mint || op == token_op_type::set_fee ||
+          op == token_op_type::transfer_ownership || op == token_op_type::pause ||
+          op == token_op_type::lock_fee)
+  {
+    const token_info *tinfo = m_tokens.get_by_address(parts[0]);
+    if(!tinfo || tinfo->creator != signer)
+      return;
+  }
+  if(has_sig)
+  {
+    if(!verify_token_extra(op, parts, info.address.m_spend_public_key, sig))
+      return;
+  }
+  else if(require_sig)
+  {
+    return;
+  }
+  switch(op)
+  {
+    case token_op_type::create:
+      if(parts.size() >= 5)
+      {
+        uint64_t creator_fee = parts.size() == 6 ? std::stoull(parts[5]) : 0;
+        m_tokens.create(parts[1], parts[2], std::stoull(parts[3]), parts[4], creator_fee, parts[0]);
+      }
+      break;
+    case token_op_type::transfer:
+      if(parts.size() == 4)
+        m_tokens.transfer_by_address(parts[0], parts[1], parts[2], std::stoull(parts[3]));
+      break;
+    case token_op_type::approve:
+      if(parts.size() == 4)
+        m_tokens.approve(parts[0], parts[1], parts[2], std::stoull(parts[3]), parts[1]);
+      break;
+    case token_op_type::transfer_from:
+      if(parts.size() == 5)
+        m_tokens.transfer_from_by_address(parts[0], parts[1], parts[2], parts[3], std::stoull(parts[4]));
+      break;
+    case token_op_type::set_fee:
+      if(parts.size() == 3)
+        m_tokens.set_creator_fee(parts[0], parts[1], std::stoull(parts[2]));
+      break;
+    case token_op_type::lock_fee:
+      if(parts.size() == 2)
+        m_tokens.lock_creator_fee(parts[0], parts[1]);
+      break;
+    case token_op_type::burn:
+      if(parts.size() == 3)
+        m_tokens.burn(parts[0], parts[1], std::stoull(parts[2]));
+      break;
+    case token_op_type::mint:
+      if(parts.size() == 3)
+        m_tokens.mint(parts[0], parts[1], std::stoull(parts[2]));
+      break;
+    case token_op_type::transfer_ownership:
+      if(parts.size() == 3)
+        m_tokens.transfer_ownership(parts[0], parts[1], parts[2]);
+      break;
+    case token_op_type::pause:
+      if(parts.size() == 3)
+        m_tokens.set_paused(parts[0], parts[1], std::stoull(parts[2]) != 0);
+      break;
+    case token_op_type::freeze:
+      if(parts.size() == 4)
+        m_tokens.set_frozen(parts[0], parts[1], parts[2], std::stoull(parts[3]) != 0);
+      break;
+  }
+  if(!m_tokens_path.empty())
+    m_tokens.save(m_tokens_path);
+}
   //------------------------------------------------------------------------------------------------------------------------
   template<class t_core>
   void t_cryptonote_protocol_handler<t_core>::stop()

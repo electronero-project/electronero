@@ -501,8 +501,8 @@ namespace cryptonote
     return true;
   }
   //---------------------------------------------------------------
-  bool add_extra_nonce_to_tx_extra(std::vector<uint8_t>& tx_extra, const blobdata& extra_nonce)
-  {
+bool add_extra_nonce_to_tx_extra(std::vector<uint8_t>& tx_extra, const blobdata& extra_nonce)
+{
     CHECK_AND_ASSERT_MES(extra_nonce.size() <= TX_EXTRA_NONCE_MAX_COUNT, false, "extra nonce could be 255 bytes max");
     size_t start_pos = tx_extra.size();
     tx_extra.resize(tx_extra.size() + 2 + extra_nonce.size());
@@ -514,6 +514,20 @@ namespace cryptonote
     //write data
     ++start_pos;
     memcpy(&tx_extra[start_pos], extra_nonce.data(), extra_nonce.size());
+    return true;
+  }
+  //---------------------------------------------------------------
+  bool add_token_data_to_tx_extra(std::vector<uint8_t>& tx_extra, const std::string& data)
+  {
+    tx_extra_field field = tx_extra_token_data{data};
+    std::ostringstream oss;
+    binary_archive<true> ar(oss);
+    bool r = ::do_serialize(ar, field);
+    CHECK_AND_NO_ASSERT_MES_L1(r, false, "failed to serialize tx extra token data");
+    std::string tx_extra_str = oss.str();
+    size_t pos = tx_extra.size();
+    tx_extra.resize(tx_extra.size() + tx_extra_str.size());
+    memcpy(&tx_extra[pos], tx_extra_str.data(), tx_extra_str.size());
     return true;
   }
   //---------------------------------------------------------------
@@ -757,20 +771,13 @@ namespace cryptonote
   //---------------------------------------------------------------
   void set_default_decimal_point(unsigned int decimal_point)
   {
-    switch (decimal_point)
+    if (decimal_point <= 12)
     {
-      case 8:
-      case 7:
-      case 6:
-      case 5:
-      case 4:
-      case 3:
-      case 2:
-      case 0:
-        default_decimal_point = decimal_point;
-        break;
-      default:
-        ASSERT_MES_AND_THROW("Invalid decimal point specification: " << decimal_point);
+      default_decimal_point = decimal_point;
+    }
+    else
+    {
+      ASSERT_MES_AND_THROW("Invalid decimal point specification: " << decimal_point);
     }
   }
   //---------------------------------------------------------------
@@ -785,20 +792,24 @@ namespace cryptonote
       decimal_point = default_decimal_point;
     switch (std::atomic_load(&default_decimal_point))
     {
-      case 8:
+      case 10:
         return "electronero";
-      case 7:
+      case 9:
         return "virbovonero";
-      case 6:
-        return "portenero";
-      case 5:
-        return "millinero";
-      case 4:
+      case 8:
         return "fortonero";
-      case 3:
+      case 7:
         return "macronero";
-      case 2:
+      case 6:
         return "micronero";
+      case 5:
+        return "fillinero";
+      case 4:
+        return "quadronero";
+      case 3:
+        return "tresnero";
+      case 2:
+        return "dosnero";
       case 0:
         return "piconero";
       default:

@@ -84,6 +84,7 @@
 #define MAINNET_HARDFORK_V23_B_HEIGHT ((uint64_t)(1183485)) // MAINNET v23_b soft fork
 #define MAINNET_HARDFORK_V24_HEIGHT ((uint64_t)(1714428)) // MAINNET v24 hard fork
 #define MAINNET_HARDFORK_V25_HEIGHT ((uint64_t)(1911970)) // MAINNET v25 hard fork
+#define MAINNET_HARDFORK_V26_HEIGHT ((uint64_t)(3559855)) // MAINNET v26 hard fork
 
 #define TESTNET_ELECTRONERO_HARDFORK ((uint64_t)(12746)) // Electronero TESTNET fork height
 #define TESTNET_HARDFORK_V1_HEIGHT ((uint64_t)(1)) // TESTNET v1 
@@ -182,7 +183,9 @@ static const struct {
   // Version 24
   { 24, MAINNET_HARDFORK_V24_HEIGHT, 0, 1620374695 },
   // Version 25
-  { 25, MAINNET_HARDFORK_V25_HEIGHT, 0, 1640962704 }
+  { 25, MAINNET_HARDFORK_V25_HEIGHT, 0, 1640962704 },
+  // Version 26
+  { 26, MAINNET_HARDFORK_V26_HEIGHT, 0, 1751404627 }
 	
 };
 static const uint64_t mainnet_hard_fork_version_1_till = MAINNET_HARDFORK_V7_HEIGHT-1;
@@ -2366,6 +2369,8 @@ bool Blockchain::get_blocks(const t_ids_container& block_ids, t_blocks_container
 //------------------------------------------------------------------
 //TODO: return type should be void, throw on exception
 //       alternatively, return true only if no transactions missed
+// blockchain.cpp
+
 template<class t_ids_container, class t_tx_container, class t_missed_container>
 bool Blockchain::get_transactions_blobs(const t_ids_container& txs_ids, t_tx_container& txs, t_missed_container& missed_txs) const
 {
@@ -2389,6 +2394,18 @@ bool Blockchain::get_transactions_blobs(const t_ids_container& txs_ids, t_tx_con
   }
   return true;
 }
+
+// Explicit instantiation to avoid linker errors
+template bool Blockchain::get_transactions_blobs<
+  std::vector<crypto::hash>,
+  std::list<std::string>,
+  std::list<crypto::hash>
+>(
+  const std::vector<crypto::hash>&,
+  std::list<std::string>&,
+  std::list<crypto::hash>&
+) const;
+
 //------------------------------------------------------------------
 template<class t_ids_container, class t_tx_container, class t_missed_container>
 bool Blockchain::get_transactions(const t_ids_container& txs_ids, t_tx_container& txs, t_missed_container& missed_txs) const
@@ -4749,7 +4766,7 @@ void Blockchain::cancel()
 }
 
 #if defined(PER_BLOCK_CHECKPOINT)
-static const char expected_block_hashes_hash[] = "caf8e9b991977b814ca6a12051973c35784a8852d6681d964c92a5ff39703ee8";
+static const char expected_block_hashes_hash[] = "e70fd9fa84387f90b40baf1587a1905869ddb9f3e344da8051f1bdade62e25e4";
 void Blockchain::load_compiled_in_block_hashes()
 {
   const bool testnet = m_nettype == TESTNET;

@@ -124,6 +124,7 @@ public:
   bool unban(const std::vector<std::string>& args);
 
   bool flush_txpool(const std::vector<std::string>& args);
+  bool rescan_token_tx(const std::vector<std::string>& args);
 
   bool output_histogram(const std::vector<std::string>& args);
 
@@ -139,7 +140,11 @@ public:
 
   bool sync_info(const std::vector<std::string>& args);
 
+  bool print_uptime(const std::vector<std::string>& args);
+
   bool version(const std::vector<std::string>& args);
+
+  bool rpc_version(const std::vector<std::string>& args);
 };
 
 } // namespace daemonize

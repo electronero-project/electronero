@@ -12,16 +12,18 @@ xAssets (airdrops & swaps): xETNX / xETNXP / xLTNX / xGLDX / xCRFI / xXMR / xETN
 
 Source code forked from Monero, Blockchain forked from Electroneum. Many security updates and unique features have been added over the years. 
 
-`Copyright (c) 2014-2018 The Monero Project.
+```
+Copyright (c) 2014-2018 The Monero Project.
 Portions Copyright (c) 2012-2013 The Cryptonote developers.
 Portions Copyright (c) 2017-2018 The Electroneum developers.  
 Portions Copyright (c) ~2018 The Masari developers.
 Portions Copyright (c) ~2018 The Sumokoin developers.
 Portions Copyright (c) ~2018 The Stellite developers.
-Portions Copyright (c) 2014-2018 The Electronero Project.  
-Portions Copyright (c) 2014-2018 The Electronero Pulse Project.  
-Portions Copyright (c) 2014-2018 The Litenero Project.  
-Portions Copyright (c) 2014-2018 The Goldnero Project.`
+Portions Copyright (c) 2014-2025 The Electronero Project.  
+Portions Copyright (c) 2014-2025 The Electronero Pulse Project.  
+Portions Copyright (c) 2014-2024 The Litenero Project.  
+Portions Copyright (c) 2014-2024 The Goldnero Project.
+```
 
 ## Table of Contents
 
@@ -168,9 +170,9 @@ library archives (`.a`).
 | libunbound   | 1.4.16        | YES      | `libunbound-dev`   | `unbound`    | `unbound-devel`   | NO       | DNS resolver   |
 | libsodium    | ?             | NO       | `libsodium-dev`    | ?            | `libsodium-devel` | NO       | libsodium      |
 | libminiupnpc | 2.0           | YES      | `libminiupnpc-dev` | `miniupnpc`  | `miniupnpc-devel` | YES      | NAT punching   |
-| libunwind    | any           | NO       | `libunwind8-dev`   | `libunwind`  | `libunwind-devel` | YES      | Stack traces   |
+| libunwind    | any           | NO       | `libunwind-dev`   | `libunwind`  | `libunwind-devel` | YES      | Stack traces   |
 | liblzma      | any           | NO       | `liblzma-dev`      | `xz`         | `xz-devel`        | YES      | For libunwind  |
-| libreadline  | 6.3.0         | NO       | `libreadline6-dev` | `readline`   | `readline-devel`  | YES      | Input editing  |
+| libreadline  | 6.3.0         | NO       | `libreadline-dev` | `readline`   | `readline-devel`  | YES      | Input editing  |
 | ldns         | 1.6.17        | NO       | `libldns-dev`      | `ldns`       | `ldns-devel`      | YES      | SSL toolkit    |
 | expat        | 1.1           | NO       | `libexpat1-dev`    | `expat`      | `expat-devel`     | YES      | XML parsing    |
 | GTest        | 1.5           | YES      | `libgtest-dev`^    | `gtest`      | `gtest-devel`     | YES      | Test suite     |
@@ -189,9 +191,9 @@ Then:
 
 [2] libnorm-dev is needed if your zmq library was built with libnorm, and not needed otherwise
 
-Install all dependencies at once on Debian/Ubuntu:
+Install all dependencies at once on Debian/Ubuntu (tested on 22.04):
 
-``` sudo apt update && sudo apt install build-essential cmake pkg-config libssl-dev libzmq3-dev libunbound-dev libsodium-dev libunwind8-dev liblzma-dev libreadline6-dev libldns-dev libexpat1-dev libpgm-dev qttools5-dev-tools libhidapi-dev libusb-1.0-0-dev libprotobuf-dev protobuf-compiler libudev-dev libboost-chrono-dev libboost-date-time-dev libboost-filesystem-dev libboost-locale-dev libboost-program-options-dev libboost-regex-dev libboost-serialization-dev libboost-system-dev libboost-thread-dev ccache doxygen graphviz ```
+``` sudo apt update && sudo apt install build-essential cmake pkg-config libssl-dev libzmq3-dev libunbound-dev libsodium-dev libunwind-dev liblzma-dev libreadline-dev libldns-dev libexpat1-dev libpgm-dev qttools5-dev-tools libhidapi-dev libusb-1.0-0-dev libprotobuf-dev protobuf-compiler libudev-dev libboost-chrono-dev libboost-date-time-dev libboost-filesystem-dev libboost-locale-dev libboost-program-options-dev libboost-regex-dev libboost-serialization-dev libboost-system-dev libboost-thread-dev ccache doxygen graphviz ```
 
 Install all dependencies at once on openSUSE:
 
@@ -525,3 +527,65 @@ config](utils/conf/electronerod.conf).
 
 If you're on Mac, you may need to add the `--max-concurrency 1` option to
 electronero-wallet-cli, and possibly electronerod, if you get crashes refreshing.
+
+## XRC-20 Token Smart Contracts
+Electronero now includes a simple XRC-20 token platform accessible from the CLI and RPC. Use `token_create`, `token_balance`, `token_transfer`, `token_approve`, `token_transfer_from`, `token_allowance`, `token_set_fee`, `token_lock_fee`, `token_pause`, `token_unpause`, `token_freeze`, `token_unfreeze`, `token_info`, `token_history`, `token_history_addr`, `all_tokens`, `tokens_deployed`, and `my_tokens` commands to manage ERC20-like tokens.
+
+Creating a token requires paying a fee defined by `TOKEN_DEPLOYMENT_FEE` which is automatically sent to `GOVERNANCE_WALLET_ADDRESS`.
+Every `token_transfer` and `token_transfer_from` also pays a small governance fee defined by `TOKEN_TRANSFER_FEE` to the same address. In addition each token may specify a `creator_fee` paid to its creator on every transfer. Use `token_set_fee` to change this amount; updates require paying `TOKEN_DEPLOYMENT_FEE` to governance.
+Tokens are created with a `name`, `symbol`, initial `supply`, and an optional `creator_fee`. After paying the fee the wallet displays the token's `cEVM` address derived from the creator's wallet. Pass this address to `token_balance`, `token_transfer`, and `token_transfer_from` to operate on a token. Token data is stored in `<data-dir>/tokens.bin` (default `~/.bitelectronero/tokens.bin`) and synchronized across peers. Each token operation is serialized into the `tx_extra` field of a normal transaction so every node observes and applies the update when the transaction is relayed or confirmed. Use `all_tokens` to view every token known to the wallet, `tokens_deployed` to list tokens created by an address (defaults to the selected account's address), and `my_tokens` to list tokens held by an address.
+Use `token_info` with the token address to query a token's metadata.
+`token_history` prints transfers for a token address while `token_history_addr` lists all token transfers involving a given wallet address. Both commands accept an optional `in` or `out` argument to filter the results by direction and `token_history` may also take an address to limit results to that participant.
+All token transactions use your wallet's default ring size (mixin) when constructing the underlying fee transaction, ensuring they are valid and private by default.
+
+## Opcode Origin: XRC-20 Cryptonote Token Subsystem 
+Electronero provides a robust Cryptonote Token Subsystem featuring the standardized XRC-20 token similar to ERC‑20. 
+Token actions are encoded in the transaction `tx_extra` field and shared between peers. 
+The following commands are available in both the CLI and RPC:
+
+* `token_create <name> <symbol> <supply> [creator_fee]` – deploy a token. Requires paying `TOKEN_DEPLOYMENT_FEE` (default `1000000000000000`) to `GOVERNANCE_WALLET_ADDRESS`.
+* `token_balance <token_address> [owner]` – show the balance for an address.
+* `token_transfer <token_address> <to> <amount>` – transfer tokens from the selected account's address, paying `TOKEN_TRANSFER_FEE` (default `300000000000000`) and any `creator_fee`.
+  If `<to>` is an integrated address the underlying base address is automatically approved to spend the deposited amount via `token_transfer_from`.
+* `token_approve <name> <spender> <amount>` – approve another account to transfer your tokens.
+* `token_transfer_from <token_address> <from> <to> <amount>` – move tokens from an approved account using the selected account's address as the spender. Integrated addresses may be used for either address.
+* `token_burn <token_address> <amount>` – destroy tokens you own.
+* `token_mint <token_address> <amount>` – mint new tokens (creator only), paying `TOKEN_DEPLOYMENT_FEE`.
+* `token_set_fee <token_address> <creator_fee>` – update the creator fee; also pays `TOKEN_DEPLOYMENT_FEE`.
+* `token_lock_fee <token_address>` – lock the current creator fee so it cannot be changed; also pays `TOKEN_DEPLOYMENT_FEE`.
+* `token_pause <token_address>` – pause all transfers for a token (creator only), paying `TOKEN_DEPLOYMENT_FEE`.
+* `token_unpause <token_address>` – resume transfers for a token (creator only), also paying `TOKEN_DEPLOYMENT_FEE`.
+* `token_freeze <token_address> <account>` – prevent an account from transferring or receiving the token. Requires a signed governance transaction and pays `TOKEN_DEPLOYMENT_FEE`.
+* `token_unfreeze <token_address> <account>` – allow a frozen account to transfer and receive again. Also requires a signed governance transaction and pays `TOKEN_DEPLOYMENT_FEE`.
+* `token_info <token_address>` – display token metadata.
+* `token_allowance <token_address> <owner> <spender>` – view the remaining allowance for a spender.
+* `token_history <token_address>` – list transfers for a token.
+* `token_history_addr <address>` – list transfers involving an address.
+* `tokens_deployed [address]` – list tokens created by an address. When omitted, the wallet uses the currently selected account's primary address.
+* `my_tokens [address]` – list tokens held by an address. When omitted, the wallet uses the currently selected account's primary address.
+
+Token state is stored in the `<data-dir>/tokens.bin` file and kept in sync across nodes. Earlier versions also exchanged a token blob in the handshake, but that field has been removed to avoid large payloads. Nodes now learn about tokens from transactions or by running `rescan_token_operations`. Each operation remains private thanks to ring signatures and normal transaction handling.
+
+Running `rescan_token_operations` wipes the local token data and replays all token transactions from the supplied start height. Replaying from height `0` rebuilds the complete token history.
+
+### Future Token Improvements
+Tokens can now be burned or minted as needed. Future updates may extend the token system with additional governance features.
+Possible enhancements include freezing accounts or supporting time-locked token transfers.
+
+## Python RPC Helpers
+Electronero now ships with a lightweight Python module located in `modules/python/electronero.py`.
+It provides `DaemonRPC` and `WalletRPC` classes for easy access to JSON RPC endpoints.
+The `WalletRPC` class includes a new `get_transfers()` helper for listing incoming and outgoing transfers.
+See `modules/python.md` for usage examples.
+
+### Future Python Improvements
+Upcoming updates may introduce asynchronous RPC helpers built on `asyncio` to better integrate with modern event loops.
+
+## Daemon RPC Utilities
+The command-line daemon now supports `rpc_version` to query the RPC interface version
+reported by the running daemon. This helps scripts verify compatibility with the
+exposed API. It also adds an `uptime` command for quickly checking how long the daemon has been running.
+
+### Future C++ Improvements
+Planned enhancements may expose additional runtime metrics through new RPC endpoints,
+such as configurable uptime reports with start times and system load information.

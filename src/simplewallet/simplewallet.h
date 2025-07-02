@@ -36,6 +36,7 @@
 #pragma once
 
 #include <memory>
+#include <boost/serialization/version.hpp>
 
 #include <boost/optional/optional.hpp>
 #include <boost/program_options/variables_map.hpp>
@@ -47,6 +48,7 @@
 #include "common/i18n.h"
 #include "common/password.h"
 #include "crypto/crypto.h"  // for definition of crypto::secret_key
+#include "token/token.h"
 
 #undef MONERO_DEFAULT_LOG_CATEGORY
 #define MONERO_DEFAULT_LOG_CATEGORY "wallet.simplewallet"
@@ -158,6 +160,29 @@ namespace cryptonote
     bool sweep_single(const std::vector<std::string> &args);
     bool sweep_unmixable(const std::vector<std::string> &args);
     bool donate(const std::vector<std::string> &args);
+    bool token_create(const std::vector<std::string> &args);
+    bool token_balance(const std::vector<std::string> &args);
+    bool token_transfer(const std::vector<std::string> &args);
+    bool token_approve(const std::vector<std::string> &args);
+    bool token_transfer_from(const std::vector<std::string> &args);
+    bool token_allowance(const std::vector<std::string> &args);
+    bool token_burn(const std::vector<std::string> &args);
+    bool token_mint(const std::vector<std::string> &args);
+    bool token_info(const std::vector<std::string> &args);
+    bool all_tokens(const std::vector<std::string> &args);
+    bool tokens_deployed(const std::vector<std::string> &args);
+    bool my_tokens(const std::vector<std::string> &args);
+    bool token_history(const std::vector<std::string> &args);
+    bool token_history_addr(const std::vector<std::string> &args);
+    bool token_set_fee(const std::vector<std::string> &args);
+    bool token_lock_fee(const std::vector<std::string> &args);
+    bool token_transfer_ownership(const std::vector<std::string> &args);
+    bool token_pause(const std::vector<std::string> &args);
+    bool token_unpause(const std::vector<std::string> &args);
+    bool token_freeze(const std::vector<std::string> &args);
+    bool token_unfreeze(const std::vector<std::string> &args);
+
+    bool submit_token_tx(const std::vector<cryptonote::tx_destination_entry> &dsts, const std::vector<uint8_t> &extra);
     bool sign_transfer(const std::vector<std::string> &args);
     bool submit_transfer(const std::vector<std::string> &args);
     std::vector<std::vector<cryptonote::tx_destination_entry>> split_amounts(
@@ -185,6 +210,7 @@ namespace cryptonote
     bool show_transfers(const std::vector<std::string> &args);
     bool unspent_outputs(const std::vector<std::string> &args);
     bool rescan_blockchain(const std::vector<std::string> &args);
+    bool rescan_token_tx(const std::vector<std::string> &args);
     bool refresh_main(uint64_t start_height, bool reset = false, bool is_init = false);
     bool set_tx_note(const std::vector<std::string> &args);
     bool get_tx_note(const std::vector<std::string> &args);
@@ -352,5 +378,8 @@ namespace cryptonote
     bool m_auto_refresh_refreshing;
     std::atomic<bool> m_in_manual_refresh;
     uint32_t m_current_subaddress_account;
+
+    token_store m_tokens;
+    std::string m_tokens_path;
   };
 }

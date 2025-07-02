@@ -38,7 +38,17 @@
 #define MAKE_IPV4_ADDRESS(a,b,c,d) epee::net_utils::ipv4_network_address{MAKE_IP(a,b,c,d),0}
 
 namespace cryptonote {
-  class blockchain_storage;
+  // Minimal stub for compiling protocol handler with the test core.
+  class blockchain_storage
+  {
+  public:
+    template<typename F>
+    bool for_all_transactions(F&&) { return true; }
+    uint64_t get_current_blockchain_height() const { return 0; }
+    template<typename F>
+    bool for_blocks_range(uint64_t, uint64_t, F&&) const { return true; }
+    bool get_transactions(const std::vector<crypto::hash>&, std::list<cryptonote::transaction>&, std::list<crypto::hash>&) const { return true; }
+  };
 }
 
 class test_core
@@ -82,6 +92,10 @@ public:
   cryptonote::difficulty_type get_block_cumulative_difficulty(uint64_t height) const { return 0; }
   bool fluffy_blocks_enabled() const { return false; }
   uint64_t prevalidate_block_hashes(uint64_t height, const std::list<crypto::hash> &hashes) { return 0; }
+  const std::string& get_config_folder() const {
+      static const std::string dummy = "/tmp/test_core_config";
+      return dummy;
+  }
   void stop() {}
 };
 

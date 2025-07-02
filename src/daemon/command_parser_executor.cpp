@@ -542,6 +542,19 @@ bool t_command_parser_executor::flush_txpool(const std::vector<std::string>& arg
   return m_executor.flush_txpool(txid);
 }
 
+bool t_command_parser_executor::rescan_token_tx(const std::vector<std::string>& args)
+{
+  uint64_t from_height = 0;
+  if (args.size() > 1) return false;
+  if (!args.empty())
+  {
+    if (!epee::string_tools::get_xtype_from_string(from_height, args[0]))
+      return false;
+  }
+
+  return m_executor.rescan_token_tx(from_height);
+}
+
 bool t_command_parser_executor::output_histogram(const std::vector<std::string>& args)
 {
   std::vector<uint64_t> amounts;
@@ -659,10 +672,24 @@ bool t_command_parser_executor::sync_info(const std::vector<std::string>& args)
   return m_executor.sync_info();
 }
 
+bool t_command_parser_executor::print_uptime(const std::vector<std::string>& args)
+{
+  if (!args.empty()) return false;
+
+  return m_executor.print_uptime();
+}
+
 bool t_command_parser_executor::version(const std::vector<std::string>& args)
 {
   std::cout << "Monero '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")" << std::endl;
   return true;
+}
+
+bool t_command_parser_executor::rpc_version(const std::vector<std::string>& args)
+{
+  if (!args.empty()) return false;
+
+  return m_executor.rpc_version();
 }
 
 } // namespace daemonize

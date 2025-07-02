@@ -45,6 +45,7 @@
 #include "block_queue.h"
 #include "cryptonote_basic/connection_context.h"
 #include "cryptonote_basic/cryptonote_stat_info.h"
+#include "token/token.h"
 #include <boost/circular_buffer.hpp>
 
 PUSH_WARNINGS
@@ -107,6 +108,8 @@ namespace cryptonote
     void log_connections();
     std::list<connection_info> get_connections();
     const block_queue &get_block_queue() const { return m_block_queue; }
+    void rescan_token_operations(uint64_t from_height) override;
+    void process_token_tx(const cryptonote::transaction &tx, uint64_t height) override;
     void stop();
     void on_connection_close(cryptonote_connection_context &context);
   private:
@@ -147,6 +150,9 @@ namespace cryptonote
     boost::mutex m_buffer_mutex;
     double get_avg_block_size();
     boost::circular_buffer<size_t> m_avg_buffer = boost::circular_buffer<size_t>(10);
+
+    token_store m_tokens;
+    std::string m_tokens_path;
 
     template<class t_parameter>
       bool post_notify(typename t_parameter::request& arg, cryptonote_connection_context& context)

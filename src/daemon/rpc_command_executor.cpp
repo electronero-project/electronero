@@ -973,7 +973,7 @@ bool t_rpc_command_executor::print_transaction_pool_stats() {
   }
   else
   {
-    memset(&res.pool_stats, 0, sizeof(res.pool_stats));
+    res.pool_stats = {};
     if (!m_rpc_server->on_get_transaction_pool_stats(req, res, false) || res.status != CORE_RPC_STATUS_OK)
     {
       tools::fail_msg_writer() << make_error(fail_message, res.status);
@@ -1551,6 +1551,34 @@ bool t_rpc_command_executor::flush_txpool(const std::string &txid)
     return true;
 }
 
+bool t_rpc_command_executor::rescan_token_tx(uint64_t from_height)
+{
+    cryptonote::COMMAND_RPC_RESCAN_TOKEN_TX::request req;
+    req.from_height = from_height;
+    cryptonote::COMMAND_RPC_RESCAN_TOKEN_TX::response res;
+    std::string fail_message = "Unsuccessful";
+    epee::json_rpc::error error_resp;
+
+    if (m_is_rpc)
+    {
+        if (!m_rpc_client->json_rpc_request(req, res, "rescan_token_tx", fail_message.c_str()))
+        {
+            return true;
+        }
+    }
+    else
+    {
+        if (!m_rpc_server->on_rescan_token_tx(req, res, error_resp) || res.status != CORE_RPC_STATUS_OK)
+        {
+            tools::fail_msg_writer() << make_error(fail_message, res.status);
+            return true;
+        }
+    }
+
+    tools::success_msg_writer() << "Token operations rescanned";
+    return true;
+}
+
 bool t_rpc_command_executor::output_histogram(const std::vector<uint64_t> &amounts, uint64_t min_count, uint64_t max_count)
 {
     cryptonote::COMMAND_RPC_GET_OUTPUT_HISTOGRAM::request req;
@@ -1912,6 +1940,62 @@ bool t_rpc_command_executor::sync_info()
       }
     }
 
+    return true;
+}
+
+bool t_rpc_command_executor::print_uptime()
+{
+    cryptonote::COMMAND_RPC_GET_INFO::request req;
+    cryptonote::COMMAND_RPC_GET_INFO::response res;
+    epee::json_rpc::error error_resp;
+    std::string fail_message = "Problem fetching info";
+
+    if (m_is_rpc)
+    {
+        if (!m_rpc_client->rpc_request(req, res, "/getinfo", fail_message.c_str()))
+            return true;
+    }
+    else
+    {
+        if (!m_rpc_server->on_get_info(req, res) || res.status != CORE_RPC_STATUS_OK)
+        {
+            tools::fail_msg_writer() << make_error(fail_message, res.status);
+            return true;
+        }
+    }
+
+    std::time_t uptime = std::time(nullptr) - res.start_time;
+    tools::success_msg_writer() << boost::format("Uptime %ud %uh %um %us")
+        % (unsigned int)floor(uptime / 60.0 / 60.0 / 24.0)
+        % (unsigned int)floor(fmod((uptime / 60.0 / 60.0), 24.0))
+        % (unsigned int)floor(fmod((uptime / 60.0), 60.0))
+        % (unsigned int)fmod(uptime, 60.0);
+    return true;
+}
+
+bool t_rpc_command_executor::rpc_version()
+{
+    cryptonote::COMMAND_RPC_GET_VERSION::request req;
+    cryptonote::COMMAND_RPC_GET_VERSION::response res;
+    epee::json_rpc::error error_resp;
+
+    std::string fail_message = "Failed to get RPC version";
+
+    if (m_is_rpc)
+    {
+        if (!m_rpc_client->json_rpc_request(req, res, "get_version", fail_message.c_str()))
+            return true;
+    }
+    else
+    {
+        if (!m_rpc_server->on_get_version(req, res, error_resp) || res.status != CORE_RPC_STATUS_OK)
+        {
+            tools::fail_msg_writer() << make_error(fail_message, res.status);
+            return true;
+        }
+    }
+
+    tools::success_msg_writer() << "Daemon RPC v" << res.version;
     return true;
 }
 

@@ -29,7 +29,8 @@
 // Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
 #include "include_base_utils.h"
-
+#include <boost/bind/placeholders.hpp>
+using namespace boost::placeholders;
 using namespace epee;
 
 #include "checkpoints.h"
@@ -342,6 +343,9 @@ namespace cryptonote
     ADD_CHECKPOINT(1911971, "b2a8a447482e9da83e9b2c009fac5f4dd98115f511fcb79d0caff4952140eb5c");
     ADD_CHECKPOINT(1911972, "e83b88e9d6812fb4e1f232d3ce4342e4cc5768b4c3a8d06f2a5b55b841f1537c");
     ADD_CHECKPOINT(1911973, "adfc6ec1aeb1464ec1965cba41648a71bfb5668dd17197000f58276a24380b50");
+    ADD_CHECKPOINT(3559854, "b3c0b217438fe146ee2c4e1b937c45f1c9a7156f4fc925b0a0dabc48b82f059e");
+    ADD_CHECKPOINT(3559855, "5a777bc8b55c09d7950ecd56df74fad73c16f821a026dd7429eca9c53daa1f34");
+    ADD_CHECKPOINT(3559856, "539c4f8225915f5d2c3cb7e15646e862a9f58eb96597c2b4790ac3bad54a423f");
 	  
     return true;
   }

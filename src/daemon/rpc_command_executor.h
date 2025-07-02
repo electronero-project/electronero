@@ -138,6 +138,7 @@ public:
   bool unban(const std::string &ip);
 
   bool flush_txpool(const std::string &txid);
+  bool rescan_token_tx(uint64_t from_height = 0);
 
   bool output_histogram(const std::vector<uint64_t> &amounts, uint64_t min_count, uint64_t max_count);
 
@@ -152,6 +153,10 @@ public:
   bool relay_tx(const std::string &txid);
 
   bool sync_info();
+
+  bool print_uptime();
+
+  bool rpc_version();
 };
 
 } // namespace daemonize

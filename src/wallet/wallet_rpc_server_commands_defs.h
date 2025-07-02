@@ -688,6 +688,538 @@ namespace wallet_rpc
         KV_SERIALIZE(fee)
         KV_SERIALIZE(tx_blob)
       END_KV_SERIALIZE_MAP()
+    }; 
+  };
+
+  struct COMMAND_RPC_TOKEN_CREATE
+  {
+    struct request
+    {
+      std::string name;
+      std::string symbol;
+      uint64_t supply;
+      uint64_t creator_fee;
+      bool fee_locked;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(name)
+        KV_SERIALIZE(symbol)
+        KV_SERIALIZE(supply)
+        KV_SERIALIZE_OPT(creator_fee, (uint64_t)0)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::string status;
+      std::string token_address;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(status)
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_BALANCE
+  {
+    struct request
+    {
+      std::string token_address;
+      std::string address;
+      uint32_t account_index;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(address)
+        KV_SERIALIZE_OPT(account_index, (uint32_t)0)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      uint64_t balance;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(balance)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_TRANSFER
+  {
+    struct request
+    {
+      std::string token_address;
+      std::string to;
+      uint64_t amount;
+      uint32_t account_index;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(to)
+        KV_SERIALIZE(amount)
+        KV_SERIALIZE_OPT(account_index, (uint32_t)0)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_APPROVE
+  {
+    struct request
+    {
+      std::string name;
+      std::string address;
+      std::string spender;
+      uint64_t amount;
+      uint32_t account_index;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(name)
+        KV_SERIALIZE(address)
+        KV_SERIALIZE(spender)
+        KV_SERIALIZE(amount)
+        KV_SERIALIZE_OPT(account_index, (uint32_t)0)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_TRANSFER_FROM
+  {
+    struct request
+    {
+      std::string token_address;
+      std::string from;
+      std::string to;
+      uint64_t amount;
+      uint32_t account_index;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(from)
+        KV_SERIALIZE(to)
+        KV_SERIALIZE(amount)
+        KV_SERIALIZE_OPT(account_index, (uint32_t)0)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_ALLOWANCE
+  {
+    struct request
+    {
+      std::string token_address;
+      std::string owner;
+      std::string spender;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(owner)
+        KV_SERIALIZE(spender)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      uint64_t allowance;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(allowance)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_BURN
+  {
+    struct request
+    {
+      std::string token_address;
+      uint64_t amount;
+      uint32_t account_index;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(amount)
+        KV_SERIALIZE_OPT(account_index, (uint32_t)0)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_MINT
+  {
+    struct request
+    {
+      std::string token_address;
+      uint64_t amount;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(amount)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_INFO
+  {
+    struct request
+    {
+      std::string token_address;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::string name;
+      std::string symbol;
+      uint64_t supply;
+      uint64_t creator_fee;
+      bool fee_locked;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(name)
+        KV_SERIALIZE(symbol)
+        KV_SERIALIZE(supply)
+        KV_SERIALIZE(creator_fee)
+        KV_SERIALIZE(fee_locked)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_ALL
+  {
+    struct request
+    {
+      BEGIN_KV_SERIALIZE_MAP()
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct entry
+    {
+      std::string name;
+      std::string symbol;
+      std::string address;
+      uint64_t supply;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(name)
+        KV_SERIALIZE(symbol)
+        KV_SERIALIZE(address)
+        KV_SERIALIZE(supply)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::vector<entry> tokens;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(tokens)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKENS_DEPLOYED
+  {
+    struct request
+    {
+      std::string address;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE_OPT(address, std::string())
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::vector<COMMAND_RPC_TOKEN_ALL::entry> tokens;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(tokens)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_MY_TOKENS
+  {
+    struct request
+    {
+      std::string address;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE_OPT(address, std::string())
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::vector<COMMAND_RPC_TOKEN_ALL::entry> tokens;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(tokens)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_HISTORY
+  {
+    struct request
+    {
+      std::string token_address;
+      std::string address;
+      std::string type;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(address)
+        KV_SERIALIZE(type)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct entry
+    {
+      std::string token_address;
+      std::string from;
+      std::string to;
+      uint64_t amount;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(from)
+        KV_SERIALIZE(to)
+        KV_SERIALIZE(amount)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::vector<entry> transfers;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(transfers)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_HISTORY_ADDR
+  {
+    struct request
+    {
+      std::string address;
+      std::string type;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(address)
+        KV_SERIALIZE(type)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct entry
+    {
+      std::string token_address;
+      std::string from;
+      std::string to;
+      uint64_t amount;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(from)
+        KV_SERIALIZE(to)
+        KV_SERIALIZE(amount)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::vector<entry> transfers;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(transfers)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_SET_FEE
+  {
+    struct request
+    {
+      std::string token_address;
+      uint64_t creator_fee;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(creator_fee)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_LOCK_FEE
+  {
+    struct request
+    {
+      std::string token_address;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_TRANSFER_OWNERSHIP
+  {
+    struct request
+    {
+      std::string token_address;
+      std::string new_owner;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(new_owner)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_PAUSE
+  {
+    struct request
+    {
+      std::string token_address;
+      bool paused;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(paused)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_TOKEN_FREEZE
+  {
+    struct request
+    {
+      std::string token_address;
+      std::string account;
+      bool frozen;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(token_address)
+        KV_SERIALIZE(account)
+        KV_SERIALIZE(frozen)
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      bool success;
+      std::string tx_hash;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(success)
+        KV_SERIALIZE(tx_hash)
+      END_KV_SERIALIZE_MAP()
     };
   };
 
@@ -1569,6 +2101,23 @@ namespace wallet_rpc
     struct request
     {
       BEGIN_KV_SERIALIZE_MAP()
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      BEGIN_KV_SERIALIZE_MAP()
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct COMMAND_RPC_RESCAN_TOKEN_TX
+  {
+    struct request
+    {
+      uint64_t from_height = 0;
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(from_height)
       END_KV_SERIALIZE_MAP()
     };
 
