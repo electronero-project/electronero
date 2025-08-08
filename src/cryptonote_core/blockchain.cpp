@@ -34,7 +34,7 @@
 #include <cstdio>
 #include <boost/filesystem.hpp>
 #include <boost/range/adaptor/reversed.hpp>
-
+#include <boost/asio/post.hpp>
 #include "include_base_utils.h"
 #include "cryptonote_basic/cryptonote_basic_impl.h"
 #include "tx_pool.h"
@@ -61,7 +61,7 @@
 #undef MONERO_DEFAULT_LOG_CATEGORY
 #define MONERO_DEFAULT_LOG_CATEGORY "blockchain"
 
-
+#define YESPOWER_HARDFORK ((uint64_t)(3607300)) 
 #define ELECTRONERO_HARDFORK ((uint64_t)(310787)) 
 #define MAINNET_HARDFORK_V1_HEIGHT ((uint64_t)(1)) // MAINNET v1 
 #define MAINNET_HARDFORK_V7_HEIGHT ((uint64_t)(307003)) // MAINNET v7 hard fork 
@@ -185,7 +185,9 @@ static const struct {
   // Version 25
   { 25, MAINNET_HARDFORK_V25_HEIGHT, 0, 1640962704 },
   // Version 26
-  { 26, MAINNET_HARDFORK_V26_HEIGHT, 0, 1751404627 }
+  { 26, MAINNET_HARDFORK_V26_HEIGHT, 0, 1751404627 },
+  // Version 27
+  { 27, YESPOWER_HARDFORK, 0, 1754086469 }
 	
 };
 static const uint64_t mainnet_hard_fork_version_1_till = MAINNET_HARDFORK_V7_HEIGHT-1;
@@ -523,7 +525,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
 
   // create general purpose async service queue
 
-  m_async_work_idle = std::unique_ptr < boost::asio::io_service::work > (new boost::asio::io_service::work(m_async_service));
+  m_async_work_idle = std::make_unique<boost::asio::executor_work_guard<boost::asio::io_context::executor_type>>(boost::asio::make_work_guard(m_async_service));
   // we only need 1
   m_async_pool.create_thread(boost::bind(&boost::asio::io_service::run, &m_async_service));
 /// off for now, until we remake blocks.dat
@@ -4145,7 +4147,7 @@ bool Blockchain::cleanup_handle_incoming_blocks(bool force_sync)
       if(m_db_sync_mode == db_async)
       {
         m_sync_counter = 0;
-        m_async_service.dispatch(boost::bind(&Blockchain::store_blockchain, this));
+        boost::asio::post(m_async_service, [this]() { store_blockchain(); });
       }
       else if(m_db_sync_mode == db_sync)
       {
@@ -4895,3 +4897,5 @@ bool Blockchain::for_all_outputs(uint64_t amount, std::function<bool(uint64_t he
 namespace cryptonote {
 template bool Blockchain::get_transactions(const std::vector<crypto::hash>&, std::list<transaction>&, std::list<crypto::hash>&) const;
 }
+
+
